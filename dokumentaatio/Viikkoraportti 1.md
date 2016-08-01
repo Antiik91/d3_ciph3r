@@ -1,4 +1,5 @@
 *1.8.2016*
+
 Ensimmäinen viikkoraportti. Tällä viikolla valittiin aihe, ja valitsin itse 
 aiheeksi tekstin salauksen ja purkamisen. Projekti on aloitettu ja tavoitteena on lähteä
 toteuttamaan projektia viimeistään huomenna.
