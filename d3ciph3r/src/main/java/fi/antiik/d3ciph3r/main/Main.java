@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package fi.antiik.d3ciph3r.main;
+import fi.antiik.d3ciph3r.logic.*;
 
 /**
  *
@@ -11,6 +12,12 @@ package fi.antiik.d3ciph3r.main;
  */
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        CaesarCipher test = new CaesarCipher(13);
+        String text = "attack at dawn";
+        System.out.println("before: " + text);
+        text = test.encrypt(text);
+        System.out.println("After: " + text);
+        text = test.decrypt(text);
+        System.out.println("And back: " + text);
     }
 }

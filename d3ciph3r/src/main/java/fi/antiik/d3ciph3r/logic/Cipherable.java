@@ -10,6 +10,6 @@ package fi.antiik.d3ciph3r.logic;
  * @author User
  */
 public interface Cipherable {
-    public void encrypt();
-    public void decrypt();
+    public String encrypt(String plaintext);
+    public String decrypt(String txt);
 }
