@@ -12,12 +12,11 @@ import fi.antiik.d3ciph3r.logic.*;
  */
 public class Main {
     public static void main(String[] args) {
-        CaesarCipher test = new CaesarCipher(13);
-        String text = "attack at dawn";
-        System.out.println("before: " + text);
-        text = test.encrypt(text);
-        System.out.println("After: " + text);
-        text = test.decrypt(text);
-        System.out.println("And back: " + text);
+        AES aesTest = new AES();
+        String plaintext = "Be ready to move on!";
+        String p1 = "Can I use an_ythiGnIw0Nt1?;";
+       
+        aesTest.encryptAndDecrypt(plaintext);
+        aesTest.encryptAndDecrypt(p1);
     }
 }
