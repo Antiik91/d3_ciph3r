@@ -20,60 +20,32 @@ public class AES {
     private static String IV = "BBBBBBBBBBBBBBBB";
     private SecretKey key;
 
-    public AES() {
+    public AES() throws Exception {
         initKey();
     }
 
-    private void initKey() {
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance("AES");
-            kg.init(128);
-            this.key = kg.generateKey();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    private void initKey() throws Exception {
+
+        KeyGenerator kg = KeyGenerator.getInstance("AES");
+        kg.init(128);
+        this.key = kg.generateKey();
+
     }
 
-    public static byte[] encrypt(String plaintext, SecretKey eKey) throws Exception {
-        
+    public byte[] encrypt(String plaintext) throws Exception {
+
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
 //        SecretKeySpec key = new SecretKeySpec(eKey.getBytes("UTF-8"), "AES");
-        cipher.init(Cipher.ENCRYPT_MODE, eKey, new IvParameterSpec(IV.getBytes("UTF-8")));
+        cipher.init(Cipher.ENCRYPT_MODE, this.key, new IvParameterSpec(IV.getBytes("UTF-8")));
         return cipher.doFinal(plaintext.getBytes("UTF-8"));
 
     }
 
-    public void encryptAndDecrypt(String plaintext) {
-        initKey();
-        try {
-            System.out.println("Message to ciphered: " + plaintext);
-            byte[] encrypt = encrypt(plaintext, this.key);
-            System.out.println("Cipher:");
-            for (int i = 0; i < encrypt.length; i++) {
-                System.out.print(new Integer(encrypt[i]) + " ");
-
-            }
-            System.out.println("");
-            System.out.println("And back again: " + decrypt(encrypt, this.key));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void printDecrypt(byte[] encryptedText) {
-        try {
-            String decryptedText = decrypt(encryptedText, this.key);
-            System.out.println("Decrypted: " + decryptedText);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String decrypt(byte[] encryptedText, SecretKey eKey) throws Exception {
+    public String decrypt(byte[] encryptedText) throws Exception {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
 //        SecretKeySpec key = new SecretKeySpec(eKey.getBytes("UTF-8"), "AES");
-        cipher.init(Cipher.DECRYPT_MODE, eKey, new IvParameterSpec(IV.getBytes("UTF-8")));
+        cipher.init(Cipher.DECRYPT_MODE, this.key, new IvParameterSpec(IV.getBytes("UTF-8")));
         return new String(cipher.doFinal(encryptedText), "UTF-8");
     }
 }
