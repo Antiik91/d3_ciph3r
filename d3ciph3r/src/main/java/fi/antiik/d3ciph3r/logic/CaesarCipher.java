@@ -41,12 +41,19 @@ public class CaesarCipher {
     public String encrypt(String plaintext) {
         encryptedText = "";
         for (int i = 0; i < plaintext.length(); i++) {
-            char c = (char) (plaintext.charAt(i) + this.shift);
-            if (c > 'z') {
-                encryptedText += (char) (plaintext.charAt(i) - (26 - this.shift));
-            } else {
-                encryptedText += (char) (plaintext.charAt(i) + this.shift);
+            int c = (char) (plaintext.charAt(i));
+            if (Character.isUpperCase(c)) {
+                c += this.shift % 26;
+                if (c > 'Z') {
+                    c -= 26;
+                }
+            } else if (Character.isLowerCase(c)) {
+                c += this.shift % 26;
+                if (c > 'z') {
+                    c -= 26;
+                }
             }
+            encryptedText += (char) c;
         }
         return encryptedText;
     }
@@ -57,15 +64,22 @@ public class CaesarCipher {
      * @param txt Encrypted text to be decrypted.
      * @return plaintext.
      */
-    public String decrypt(String txt) {
+    public String decrypt(String encryptedText) {
         String decryptedTxt = "";
-        for (int i = 0; i < txt.length(); i++) {
-            char c = (char) (txt.charAt((i)) - this.shift);
-            if (c < 'a') {
-                decryptedTxt += (char) (txt.charAt(i) + (26 - this.shift));
-            } else {
-                decryptedTxt += (char) (txt.charAt(i) - this.shift);
+        for (int i = 0; i < encryptedText.length(); i++) {
+            int c = (char) (encryptedText.charAt(i));
+            if (Character.isUpperCase(c)) {
+                c -= this.shift % 26;
+                if (c < 'A') {
+                    c -= 26;
+                }
+            } else if (Character.isLowerCase(c)) {
+                c -= this.shift % 26;
+                if (c < 'a') {
+                    c += 26;
+                }
             }
+            decryptedTxt += (char) c;
         }
         return decryptedTxt;
     }

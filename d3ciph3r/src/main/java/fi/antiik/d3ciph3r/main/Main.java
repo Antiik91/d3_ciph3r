@@ -19,16 +19,24 @@ public class Main {
             AES aesTest = new AES();
             String plaintext = "Be ready to move on!";
             String p1 = "Can I use an_ythiGnIw0Nt1?=;";
+            CaesarCipher bestCipEva = new CaesarCipher();
 //        DES desTest = new DES();
-
-            byte[] secretText = aesTest.encrypt(p1);
-            System.out.println("AESTest. Encrypting. Encrypted text: ");
-            for (int i = 0; i < secretText.length; i++) {
-                System.out.print(new Integer(secretText[i]) + " ");
-            }
-            System.out.println("");
-            System.out.println("Decrypting AES: ");
-            System.out.println(aesTest.decrypt(secretText));
+            System.out.println("CEECCARITESTI");
+            String text = bestCipEva.encrypt("I need this message to be ciphered. Will it work?");
+            System.out.println("TEHCRYPTEDTEXTIIIIS!");
+            System.out.println(text);
+            System.out.println("ENCRYPTHIIIIIIS");
+            text = bestCipEva.decrypt(text);
+            System.out.println("ISITRIIIGHT");
+            System.out.println(text);
+//            byte[] secretText = aesTest.encrypt(p1);
+//            System.out.println("AESTest. Encrypting. Encrypted text: ");
+//            for (int i = 0; i < secretText.length; i++) {
+//                System.out.print(new Integer(secretText[i]) + " ");
+//            }
+//            System.out.println("");
+//            System.out.println("Decrypting AES: ");
+//            System.out.println(aesTest.decrypt(secretText));
         } catch (Exception e) {
             e.printStackTrace();
 
