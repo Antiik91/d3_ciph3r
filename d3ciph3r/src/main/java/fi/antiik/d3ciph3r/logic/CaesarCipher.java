@@ -36,13 +36,16 @@ public class CaesarCipher {
     public int getShift() {
         return shift;
     }
-/**
- * shift cannot be negative, and if it's zero there is no point of (en/de)crypting. 
- * @param shift  new shift.
- */
+
+    /**
+     * shift cannot be negative, and if it's zero there is no point of
+     * (en/de)crypting.
+     *
+     * @param shift new shift.
+     */
     public void setShift(int shift) {
-        if(shift > 0) {
-        this.shift = shift;
+        if (shift > 0) {
+            this.shift = shift;
         }
     }
 

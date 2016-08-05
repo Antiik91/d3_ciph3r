@@ -12,33 +12,35 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Advanced Decryption Standard (AES) is a subset of the Rijndael cipher, developed
- * originally by two Belgian cryptographers.
- * AES has fixed block size of 128 bits and key size of 128, 192 or 256 bits.
- * 
+ * Advanced Decryption Standard (AES) is a subset of the Rijndael cipher,
+ * developed originally by two Belgian cryptographers. AES has fixed block size
+ * of 128 bits and key size of 128, 192 or 256 bits.
+ *
  * @author janantik
  */
 public class AES {
 
-    private static String IV = "BBBBBBBBBBBBBBBB";
+    // initialization vector. 16 bytes should be random or pseudorandom.
+    private static String IV = "AAAAAAAAAAAAAAAA";
+    //key to be used in encrypting and decrypting the data.
     private SecretKey key;
-    
- /**
-  * Creates a new secret key when created.
-  * 
-  * @throws Exception 
-  */
-    public AES() throws Exception {
-        initKey();
-    }
-    
-    
+    private Cipher cipher;
+
     /**
-     * Method create a new secret key to be used both 
-     * encryption and decryption.
-     * @throws Exception 
+     * Creates a new secret key when created.
+     *
+     * @throws Exception
      */
-    private void initKey() throws Exception {
+    public AES() throws Exception {
+        this.cipher = this.cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
+    }
+
+    /**
+     * Method create a new secret key to be used both encryption and decryption.
+     *
+     * @throws Exception
+     */
+    private void initializeKey() throws Exception {
 
         KeyGenerator kg = KeyGenerator.getInstance("AES");
         kg.init(128);
@@ -46,29 +48,51 @@ public class AES {
 
     }
 
+    public String getIV() {
+        return IV;
+    }
+
+    public void setIV(String IV) {
+        if (IV.getBytes().length == 15) {
+            AES.IV = IV;
+        }
+    }
+
+    public SecretKey getKey() {
+        return key;
+    }
+
+    public void setKey(SecretKey key) {
+
+        this.key = key;
+
+    }
+
     /**
      * Encrypts the data and return byte array of encrypted data.
-     *  
-     * 
-     * @param plaintext text to be 
+     *
+     *
+     * @param plaintext text to be
      * @return byte array of encypted data
-     * @throws Exception 
+     * @throws Exception
      */
     public byte[] encrypt(String plaintext) throws Exception {
-
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
+        if (this.key == null) {
+            initializeKey();
+        }
         cipher.init(Cipher.ENCRYPT_MODE, this.key, new IvParameterSpec(IV.getBytes("UTF-8")));
         return cipher.doFinal(plaintext.getBytes("UTF-8"));
 
     }
-/**
- * Decrypts the byte array and returns String from the data 
- * decrypted from the byte array.
- *
- * @param encryptedData byte array to be decrypted
- * @return a new String consisting plaintext of crypted data.
- * @throws Exception 
- */
+
+    /**
+     * Decrypts the byte array and returns String from the data decrypted from
+     * the byte array.
+     *
+     * @param encryptedData byte array to be decrypted
+     * @return a new String consisting plaintext of crypted data.
+     * @throws Exception
+     */
     public String decrypt(byte[] encryptedData) throws Exception {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");

@@ -26,6 +26,14 @@ public class DES {
 
     }
 
+    public SecretKey getKey() {
+        return key;
+    }
+
+    public void setKey(SecretKey key) {
+        this.key = key;
+    }
+
     /**
      * Generates a new secret key (56 bits) to be used both encryption and
      * dectypion of the data.
