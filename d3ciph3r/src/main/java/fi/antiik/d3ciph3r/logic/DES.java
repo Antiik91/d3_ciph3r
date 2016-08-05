@@ -7,14 +7,13 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
+ * Data Encryption Standard (DES) is a symmetric-key algorithm for the
+ * encryption of electron data. Developed originally in the early 1970 at IBM.
+ * DES is a block cipher, takes a plaintext bits and transform it to another
+ * ciphertext of the same length. block size is 64 bits.
  *
- * @author User
+ * @author janantik
  */
 public class DES {
 
@@ -27,6 +26,12 @@ public class DES {
 
     }
 
+    /**
+     * Generates a new secret key (56 bits) to be used both encryption and
+     * dectypion of the data.
+     *
+     * @throws Exception
+     */
     private void initializeKey() throws Exception {
 
         KeyGenerator kg = KeyGenerator.getInstance("DES");
@@ -35,6 +40,13 @@ public class DES {
 
     }
 
+    /**
+     * Decrypts the data from byte array and returns plaintext.
+     *
+     * @param bits encrypted data array.
+     * @return plaintext string.
+     * @throws Exception
+     */
     public String decrypt(byte[] bits) throws Exception {
 
         this.cipher.init(Cipher.DECRYPT_MODE, key);
@@ -42,6 +54,14 @@ public class DES {
 
     }
 
+    /**
+     * Encrypts the plaintext and returns byte array of crypted data.
+     *
+     *
+     * @param plaintext String to be crypted.
+     * @return byte array of crypted data.
+     * @throws Exception
+     */
     public byte[] encrypt(String plaintext) throws Exception {
 
         initializeKey();

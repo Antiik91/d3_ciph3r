@@ -6,48 +6,68 @@
 package fi.antiik.d3ciph3r.logic;
 
 /**
+ * Also known as shift cipher. It's a type of substituion cipher where each
+ * letter in plaintext is replaced fixed number of positions down the alphabet.
  *
- * @author User
+ * @author janantik
  */
-public class CaesarCipher implements Cipherable {
+public class CaesarCipher {
 
-    private String decryptedText;
+    private String encryptedText;
     private int shift;
 
+    /**
+     * shift is used to determinate the number of positions to be shifted.
+     *
+     * @param shift fixed number to be shifted in alphabets.
+     */
     public CaesarCipher(int shift) {
         this.shift = shift;
     }
 
+    /**
+     * if no shift is given, use the original 3 shift.
+     */
     public CaesarCipher() {
         this.shift = 3;
     }
 
-    @Override
+    /**
+     * Encrypt the data and return ciphered text.
+     *
+     * @param plaintext
+     * @return ciphered text.
+     */
     public String encrypt(String plaintext) {
-        decryptedText = "";
+        encryptedText = "";
         for (int i = 0; i < plaintext.length(); i++) {
             char c = (char) (plaintext.charAt(i) + this.shift);
             if (c > 'z') {
-                decryptedText += (char) (plaintext.charAt(i) - (26 - this.shift));
+                encryptedText += (char) (plaintext.charAt(i) - (26 - this.shift));
             } else {
-                decryptedText += (char) (plaintext.charAt(i) + this.shift);
+                encryptedText += (char) (plaintext.charAt(i) + this.shift);
             }
         }
-        return decryptedText;
+        return encryptedText;
     }
 
-    @Override
+    /**
+     * decrypts the data from param.
+     *
+     * @param txt Encrypted text to be decrypted.
+     * @return plaintext.
+     */
     public String decrypt(String txt) {
-        String encrypted = "";
+        String decryptedTxt = "";
         for (int i = 0; i < txt.length(); i++) {
             char c = (char) (txt.charAt((i)) - this.shift);
             if (c < 'a') {
-                encrypted += (char) (txt.charAt(i) + (26 - this.shift));
+                decryptedTxt += (char) (txt.charAt(i) + (26 - this.shift));
             } else {
-                encrypted += (char) (txt.charAt(i) - this.shift);
+                decryptedTxt += (char) (txt.charAt(i) - this.shift);
             }
         }
-        return encrypted;
+        return decryptedTxt;
     }
 
 }
