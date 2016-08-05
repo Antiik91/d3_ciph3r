@@ -22,7 +22,28 @@ public class CaesarCipher {
      * @param shift fixed number to be shifted in alphabets.
      */
     public CaesarCipher(int shift) {
+
         this.shift = shift;
+        if (this.shift < 0) {
+            this.shift *= -1;
+        }
+        if (this.shift == 0) {
+            this.shift = 3;
+        }
+
+    }
+
+    public int getShift() {
+        return shift;
+    }
+/**
+ * shift cannot be negative, and if it's zero there is no point of (en/de)crypting. 
+ * @param shift  new shift.
+ */
+    public void setShift(int shift) {
+        if(shift > 0) {
+        this.shift = shift;
+        }
     }
 
     /**
@@ -61,7 +82,7 @@ public class CaesarCipher {
     /**
      * decrypts the data from param.
      *
-     * @param txt Encrypted text to be decrypted.
+     * @param encryptedText Encrypted text to be decrypted.
      * @return plaintext.
      */
     public String decrypt(String encryptedText) {
