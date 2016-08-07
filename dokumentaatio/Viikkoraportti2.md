@@ -14,5 +14,5 @@ DES:ia itse. Ongelmia tuotti testien tekeminen valmiille kirjastoille, mutta se 
 
 
 
-Tällä viikolla olen käyttänyt projektiin aikaa noin 20h. Suurin osa siitä mennyt tiedonhakuun ja ohjelmointiin on mennyt n. 5h. 
+Tällä viikolla olen käyttänyt projektiin aikaa noin 15h. Suurin osa siitä mennyt tiedonhakuun ja ohjelmointiin on mennyt n. 5h. 
 
