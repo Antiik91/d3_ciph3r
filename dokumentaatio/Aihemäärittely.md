@@ -8,7 +8,11 @@ Projektissa tulee olemaan teksitkäyttöliittymä. Graafista käyttöliittymää
 #Ohjelma
 
 Ohjelmassa voit salata tekstitiedoston sisällön käyttäen joko Caesar Cipheriä [wikipedia](https://en.wikipedia.org/wiki/Caesar_cipher) tai Data Encryption Standardia [wikipedia](https://en.wikipedia.org/wiki/Data_Encryption_Standard).  
-Vastaavasti voit purkaa salauksen oikealla avaimella.
+Vastaavasti voit purkaa salauksen oikealla avaimella. Voit myös tallentaa tekstitedostoon sekä avaimet, että salatut ja puretut dokumentit.
+
+Valitsin  Caesar Cipherin sillä törmäsin siihen kaikkialla salauksista opiskellessani. ja koen sen sopivan projektiini myös. 
+DES on klassinen salausalgoritmi, joka on kehitetty vuonna 1970 IBM:ssä. Uskoakseni tämän algoritmin tekeminen luo sopivasti haastetta
+ja opettaa paljon uutta, sillä aiempaa kokemusta salausalgoritmeista minulla ei ole.
 
 #Aika- ja tilavaativuus
 
