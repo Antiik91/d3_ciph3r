@@ -56,7 +56,7 @@ public class DESTest {
         try {
             KeyGenerator kg = KeyGenerator.getInstance("DES");
             kg.init(563);
-            des.setKey(kg.generateKey());
+            des.setKeyReady(kg.generateKey());
             
         } catch (Exception e) {
             assertEquals(InvalidParameterException.class, e);
@@ -68,7 +68,7 @@ public class DESTest {
         try {
             KeyGenerator kg = KeyGenerator.getInstance("DES");
             kg.init(2);
-            des.setKey(kg.generateKey());
+            des.setKeyReady(kg.generateKey());
         } catch (Exception e) {
             assertEquals(InvalidParameterException.class, e);
         }

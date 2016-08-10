@@ -20,16 +20,16 @@ public class Main {
             String plaintext = "Be ready to move on!";
             String p1 = "Can I use an_ythiGnIw0Nt1?=;";
 
-            DES desTest = new DES();
-            byte[] secretText = desTest.encrypt(p1);
-            System.out.println("AESTest. Encrypting. Encrypted text: ");
-            for (int i = 0; i < secretText.length; i++) {
-                System.out.print(new Character((char) secretText[i]));
-            }
+//            DES desTest = new DES();
+//            byte[] secretText = desTest.encrypt(p1);
+//            System.out.println("AESTest. Encrypting. Encrypted text: ");
+//            for (int i = 0; i < secretText.length; i++) {
+//                System.out.print(new Character((char) secretText[i]));
+//            }
             System.out.println("");
             System.out.println("Decrypting AES: ");
-            System.out.println(desTest.decrypt(secretText));
-
+//            System.out.println(desTest.decrypt(secretText));
+        
         } catch (Exception e) {
             e.printStackTrace();
 
