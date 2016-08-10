@@ -7,6 +7,8 @@ package fi.antiik.d3ciph3r.main;
 
 import fi.antiik.d3ciph3r.logic.DES;
 import fi.antiik.d3ciph3r.logic.*;
+import fi.antiik.d3ciph3r.ui.*;
+import java.util.Scanner;
 
 /**
  *
@@ -28,6 +30,8 @@ public class Main {
 //            }
             System.out.println("");
             System.out.println("Decrypting AES: ");
+            UserInterface ui = new UserInterface(new Scanner(System.in));
+            ui.run();
 //            System.out.println(desTest.decrypt(secretText));
         
         } catch (Exception e) {

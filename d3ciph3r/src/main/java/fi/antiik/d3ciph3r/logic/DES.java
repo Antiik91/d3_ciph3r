@@ -114,11 +114,12 @@ public class DES {
         2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11
     }
     };
+    private byte[] shitfs = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
-    public DES(String key) throws Exception {
+    public DES() throws Exception {
 
         this.cipher = Cipher.getInstance("DES");
-        this.key = key.getBytes();
+     //   this.key = key.getBytes();
 
     }
 
