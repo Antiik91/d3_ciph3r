@@ -62,7 +62,8 @@ public class CaesarCipher {
      * @param plaintext
      * @return ciphered text.
      */
-    public String encrypt(String plaintext) {
+    public String encrypt(String plaintext, int shift) {
+        setShift(shift);
         encryptedText = "";
         for (int i = 0; i < plaintext.length(); i++) {
             int c = (char) (plaintext.charAt(i));
@@ -88,14 +89,15 @@ public class CaesarCipher {
      * @param encryptedText Encrypted text to be decrypted.
      * @return plaintext.
      */
-    public String decrypt(String encryptedText) {
+    public String decrypt(String encryptedText, int shift) {
+        setShift(shift);
         String decryptedTxt = "";
         for (int i = 0; i < encryptedText.length(); i++) {
             int c = (char) (encryptedText.charAt(i));
             if (Character.isUpperCase(c)) {
                 c -= this.shift % 26;
                 if (c < 'A') {
-                    c -= 26;
+                    c += 26;
                 }
             } else if (Character.isLowerCase(c)) {
                 c -= this.shift % 26;

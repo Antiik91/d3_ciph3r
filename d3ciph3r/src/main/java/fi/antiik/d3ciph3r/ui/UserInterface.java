@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package fi.antiik.d3ciph3r.ui;
+
 import fi.antiik.d3ciph3r.logic.*;
 import java.util.Scanner;
 
@@ -12,20 +13,24 @@ import java.util.Scanner;
  * @author janantik
  */
 public class UserInterface {
+
     private Scanner scanner;
     private Logic logic;
+    private String textFromFile = "";
+    private String cipherTextContentt = "";
 
     public UserInterface(Scanner scanner) {
         this.scanner = scanner;
         this.logic = new Logic();
     }
-    
+
     public void run() {
         System.out.println("Hello and welcome to D3ciph3r program! \n"
-                + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard [WIP!]");
-        
+                + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard [WIP!] \n"
+                + "If you wish to encrypt txt file please load the file first");
+
         printInstructions();
-        while(true){
+        while (true) {
             System.out.print("Your command: ");
             int cmd = handleCommand();
             this.scanner.nextLine();
@@ -39,16 +44,30 @@ public class UserInterface {
                 + "3: Encrypt message with DES \n"
                 + "4: Decrypt message with DES \n"
                 + "5: Print instructions \n"
-                + "6: quit");
+                + "6: Load textfile \n"
+                + "7: Quit");
     }
 
     private void execute(int cmd) {
-        switch(cmd) {
+        switch (cmd) {
             case 1:
-                caesarEncrypt();
+                String plainText;
+                if (this.textFromFile.isEmpty()) {
+                    System.out.print("String to be encrypted: ");
+                    plainText = this.scanner.nextLine();
+                } else {
+                    plainText = this.textFromFile;
+                }
+                System.out.print("Shift to be used: ");
+                int shiftEncrypt = Integer.parseInt(this.scanner.nextLine());
+                caesarEncrypt(plainText, shiftEncrypt);
                 break;
             case 2:
-                caesarDecrypt();
+                System.out.print("String to be decrypted: ");
+                String cipherText = this.scanner.nextLine();
+                System.out.print("Shift: ");
+                int shiftDecrypt = Integer.parseInt(this.scanner.nextLine());
+                caesarDecrypt(cipherText, shiftDecrypt);
                 break;
             case 3:
                 DESencrypt();
@@ -60,28 +79,45 @@ public class UserInterface {
                 printInstructions();
                 break;
             case 6:
+                System.out.print("Path to the file: ");
+                String path = this.scanner.nextLine();
+                readFile(path);
+                break;
+            case 7:
                 System.exit(0);
+                break;
+            case 8:
+                saveFile();
+                break;
             default:
                 System.out.println("Invalid command! ");
                 break;
-            
+
         }
     }
 
-    private void caesarEncrypt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void caesarEncrypt(String plainText, int shift) {
+        String cipherText = this.logic.encrytpCaesar(plainText, shift);
+        this.cipherTextContentt = cipherText;
+        System.out.println("Your shiftkey(Keep safe): " + shift);
+        System.out.println("Your crypted text = " + cipherText);
     }
 
-    private void caesarDecrypt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void caesarDecrypt(String cipherText, int shift) {
+        String plainText = "";
+        if(this.cipherTextContentt != null){
+            cipherText = this.cipherTextContentt;
+        }
+        plainText = this.logic.decryptCaesar(cipherText, shift);
+        System.out.println("Your text: " + plainText);
     }
 
     private void DESencrypt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Sorry, not yet available");
     }
 
     private void DESDecrypt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Sorry, not yet available");
     }
 
     private int handleCommand() {
@@ -89,9 +125,26 @@ public class UserInterface {
         try {
             command = this.scanner.nextInt();
             return command;
-        }catch(Exception e) {
+        } catch (Exception e) {
             System.out.println(" invalid command! Please use integers!");
-            return 0;
+            return 5;
+        }
+    }
+
+    private void readFile(String path) {
+        try {
+            this.textFromFile = this.logic.returnFileAsString(path);
+        } catch (Exception e) {
+            System.out.println("BYHYY! :( : " + e);
+        }
+
+    }
+
+    private void saveFile() {
+        try {
+            this.logic.saveFile("E:/cipher.txt", this.cipherTextContentt);
+        } catch (Exception e) {
+            System.out.println("Ouch:");
         }
     }
 }
