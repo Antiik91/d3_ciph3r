@@ -45,7 +45,8 @@ public class UserInterface {
                 + "4: Decrypt message with DES \n"
                 + "5: Print instructions \n"
                 + "6: Load textfile \n"
-                + "7: Quit");
+                + "7: Save textfile \n"
+                + "8: Quit");
     }
 
     private void execute(int cmd) {
@@ -59,14 +60,28 @@ public class UserInterface {
                     plainText = this.textFromFile;
                 }
                 System.out.print("Shift to be used: ");
-                int shiftEncrypt = Integer.parseInt(this.scanner.nextLine());
+                int shiftEncrypt = -1;
+                while (shiftEncrypt < 0) {
+                    shiftEncrypt = handleCommand();
+                    if (shiftEncrypt < 0) {
+                        System.out.println("Please use positive integers only");
+                    }
+                    this.scanner.nextLine();
+                }
                 caesarEncrypt(plainText, shiftEncrypt);
                 break;
             case 2:
                 System.out.print("String to be decrypted: ");
                 String cipherText = this.scanner.nextLine();
                 System.out.print("Shift: ");
-                int shiftDecrypt = Integer.parseInt(this.scanner.nextLine());
+                int shiftDecrypt = -1;
+                while (shiftDecrypt < 0) {
+                    shiftDecrypt = handleCommand();
+                    this.scanner.nextLine();
+                    if (shiftDecrypt < 0) {
+                        System.out.println("Please use only positive integers");
+                    }
+                }
                 caesarDecrypt(cipherText, shiftDecrypt);
                 break;
             case 3:
@@ -84,10 +99,13 @@ public class UserInterface {
                 readFile(path);
                 break;
             case 7:
+                System.out.println("Path to the file: ");
+                String pathSave = this.scanner.nextLine();
+                saveFile(pathSave);
                 System.exit(0);
                 break;
             case 8:
-                saveFile();
+                System.exit(0);
                 break;
             default:
                 System.out.println("Invalid command! ");
@@ -105,7 +123,7 @@ public class UserInterface {
 
     private void caesarDecrypt(String cipherText, int shift) {
         String plainText = "";
-        if(this.cipherTextContentt != null){
+        if (this.cipherTextContentt != null) {
             cipherText = this.cipherTextContentt;
         }
         plainText = this.logic.decryptCaesar(cipherText, shift);
@@ -127,7 +145,7 @@ public class UserInterface {
             return command;
         } catch (Exception e) {
             System.out.println(" invalid command! Please use integers!");
-            return 5;
+            return -1;
         }
     }
 
@@ -140,9 +158,9 @@ public class UserInterface {
 
     }
 
-    private void saveFile() {
+    private void saveFile(String path) {
         try {
-            this.logic.saveFile("E:/cipher.txt", this.cipherTextContentt);
+            this.logic.saveFile(path, this.cipherTextContentt);
         } catch (Exception e) {
             System.out.println("Ouch:");
         }
