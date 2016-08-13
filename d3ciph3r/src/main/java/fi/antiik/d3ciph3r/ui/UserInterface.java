@@ -9,6 +9,7 @@ import fi.antiik.d3ciph3r.logic.*;
 import java.util.Scanner;
 
 /**
+ * UI to the program.
  *
  * @author janantik
  */
@@ -19,11 +20,20 @@ public class UserInterface {
     private String textFromFile = "";
     private String cipherTextContentt = "";
 
+    /**
+     * New UserInterface creates logic wich operates commands from the user.
+     *
+     * @param scanner comes from Main
+     */
     public UserInterface(Scanner scanner) {
         this.scanner = scanner;
         this.logic = new Logic();
     }
 
+    /**
+     * Run is called from Main. it's the centre of program and is active while
+     * program is running.
+     */
     public void run() {
         System.out.println("Hello and welcome to D3ciph3r program! \n"
                 + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard [WIP!] \n"
@@ -32,12 +42,15 @@ public class UserInterface {
         printInstructions();
         while (true) {
             System.out.print("Your command: ");
-            int cmd = handleCommand();
+            int cmd = this.logic.handleCommand(this.scanner);
             this.scanner.nextLine();
             execute(cmd);
         }
     }
 
+    /**
+     * Prints the instructions how to use program.
+     */
     private void printInstructions() {
         System.out.println("1: Encrypt message with Caesar Cipher \n"
                 + "2: Decrypt message with Caesar Cipher \n"
@@ -49,6 +62,11 @@ public class UserInterface {
                 + "8: Quit");
     }
 
+    /**
+     * Executes the command given from param.
+     *
+     * @param cmd command to be executed.
+     */
     private void execute(int cmd) {
         switch (cmd) {
             case 1:
@@ -62,7 +80,7 @@ public class UserInterface {
                 System.out.print("Shift to be used: ");
                 int shiftEncrypt = -1;
                 while (shiftEncrypt < 0) {
-                    shiftEncrypt = handleCommand();
+                    shiftEncrypt = this.logic.handleCommand(this.scanner);
                     if (shiftEncrypt < 0) {
                         System.out.println("Please use positive integers only");
                     }
@@ -76,7 +94,7 @@ public class UserInterface {
                 System.out.print("Shift: ");
                 int shiftDecrypt = -1;
                 while (shiftDecrypt < 0) {
-                    shiftDecrypt = handleCommand();
+                    shiftDecrypt = this.logic.handleCommand(this.scanner);
                     this.scanner.nextLine();
                     if (shiftDecrypt < 0) {
                         System.out.println("Please use only positive integers");
@@ -114,6 +132,12 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Encrypts given string using Caesar Cipher.
+     *
+     * @param plainText String to be encrypted.
+     * @param shift Shift used for encrypting.
+     */
     private void caesarEncrypt(String plainText, int shift) {
         String cipherText = this.logic.encrytpCaesar(plainText, shift);
         this.cipherTextContentt = cipherText;
@@ -121,6 +145,12 @@ public class UserInterface {
         System.out.println("Your crypted text = " + cipherText);
     }
 
+    /**
+     * Decrypts given cipher text using Caesar Cipher.
+     *
+     * @param cipherText String to be decrypted.
+     * @param shift Shift used for encrypting
+     */
     private void caesarDecrypt(String cipherText, int shift) {
         String plainText = "";
         if (this.cipherTextContentt != null) {
@@ -138,17 +168,11 @@ public class UserInterface {
         System.out.println("Sorry, not yet available");
     }
 
-    private int handleCommand() {
-        int command = 0;
-        try {
-            command = this.scanner.nextInt();
-            return command;
-        } catch (Exception e) {
-            System.out.println(" invalid command! Please use integers!");
-            return -1;
-        }
-    }
-
+    /**
+     * Reads the file from given path.
+     *
+     * @param path path to the file.
+     */
     private void readFile(String path) {
         try {
             this.textFromFile = this.logic.returnFileAsString(path);
@@ -158,6 +182,11 @@ public class UserInterface {
 
     }
 
+    /**
+     * Saves the file to given path.
+     *
+     * @param path Path to the file.
+     */
     private void saveFile(String path) {
         try {
             this.logic.saveFile(path, this.cipherTextContentt);
