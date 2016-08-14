@@ -42,8 +42,8 @@ public class UserInterface {
         printInstructions();
         while (true) {
             System.out.print("Your command: ");
-            int cmd = this.logic.handleCommand(this.scanner);
-            this.scanner.nextLine();
+            String order = this.scanner.nextLine();
+            int cmd = this.logic.handleCommand(order);
             execute(cmd);
         }
     }
@@ -80,11 +80,11 @@ public class UserInterface {
                 System.out.print("Shift to be used: ");
                 int shiftEncrypt = -1;
                 while (shiftEncrypt < 0) {
-                    shiftEncrypt = this.logic.handleCommand(this.scanner);
+                    String eShift = this.scanner.nextLine();
+                    shiftEncrypt = this.logic.handleCommand(eShift);
                     if (shiftEncrypt < 0) {
                         System.out.println("Please use positive integers only");
                     }
-                    this.scanner.nextLine();
                 }
                 caesarEncrypt(plainText, shiftEncrypt);
                 break;
@@ -94,8 +94,8 @@ public class UserInterface {
                 System.out.print("Shift: ");
                 int shiftDecrypt = -1;
                 while (shiftDecrypt < 0) {
-                    shiftDecrypt = this.logic.handleCommand(this.scanner);
-                    this.scanner.nextLine();
+                    String dShift = this.scanner.nextLine();
+                    shiftDecrypt = this.logic.handleCommand(dShift);
                     if (shiftDecrypt < 0) {
                         System.out.println("Please use only positive integers");
                     }
@@ -153,9 +153,9 @@ public class UserInterface {
      */
     private void caesarDecrypt(String cipherText, int shift) {
         String plainText = "";
-        if (this.cipherTextContentt != null) {
-            cipherText = this.cipherTextContentt;
-        }
+//        if (this.cipherTextContentt != null) {
+//            cipherText = this.cipherTextContentt;
+//        }
         plainText = this.logic.decryptCaesar(cipherText, shift);
         System.out.println("Your text: " + plainText);
     }

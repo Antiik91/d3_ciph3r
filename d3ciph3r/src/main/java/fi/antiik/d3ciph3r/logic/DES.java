@@ -1,6 +1,7 @@
 package fi.antiik.d3ciph3r.logic;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
@@ -19,7 +20,7 @@ public class DES {
 
     private SecretKey keyReady;
     private static Cipher cipher;
-    private byte[] key;
+    private String key = "";
 
     private int[] PC1 = {
         57, 49, 41, 33, 25, 17, 9,
@@ -114,7 +115,7 @@ public class DES {
         2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11
     }
     };
-    private byte[] shitfs = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+    private int[] shitfs = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
     public DES() throws Exception {
 
@@ -132,10 +133,24 @@ public class DES {
     }
 
     private void createSubKeys() {
-        byte[] pKey = new byte[48];
+       int byteS, shiftSize;
+        for (int i = 0; i < 56; i++) {
+            shiftSize = PC1[i];
+            byteS = 0x80 >>((shiftSize- 1)%8);
+        //S    byteS &= this.key[(shiftSize -1)/8];
+        }
 
     }
+    public void generateKey(){
+        Random random = new Random();
+        for (int i = 0; i < 8; i++) {
+            this.key += (char) random.nextInt(127);
+        }
+    }
 
+    public String getKey() {
+        return this.key;
+    }
     /**
      * Generates a new secret keyReady (56 bits) to be used both encryption and
      * dectypion of the data.

@@ -6,7 +6,6 @@
 package fi.antiik.d3ciph3r.logic;
 
 import fi.antiik.d3ciph3r.filehandler.*;
-import java.util.Scanner;
 
 /**
  * Logic for the program.
@@ -74,11 +73,10 @@ public class Logic {
      * @param scanner scanner to scan user input.
      * @return -1 if exception, positive input else.
      */
-    public int handleCommand(Scanner scanner) {
-        int command = 0;
+    public int handleCommand(String command) {
         try {
-            command = Integer.parseInt(scanner.nextLine());
-            return command;
+           int result = Integer.parseInt(command);
+            return result;
         } catch (Exception e) {
             return -1;
         }

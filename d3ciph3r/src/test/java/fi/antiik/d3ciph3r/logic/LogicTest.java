@@ -19,8 +19,6 @@ import static org.junit.Assert.*;
  */
 public class LogicTest {
     private Logic logic;
-    private Scanner falseScanner;
-    private Scanner trueScanner;
     public LogicTest() {
     }
     
@@ -34,8 +32,6 @@ public class LogicTest {
     
     @Before
     public void setUp() {
-        this.falseScanner = new Scanner("Kissa meni yli laidan");
-        this.trueScanner = new Scanner("3");
         this.logic = new Logic();
     }
     
@@ -46,6 +42,21 @@ public class LogicTest {
     
     @Test
     public void handleCommandReturnstrue(){
-        assertEquals(3, this.trueScanner);
+        assertEquals(3, this.logic.handleCommand("3"));
+    }
+    
+    @Test
+    public void positiveIntegerHandleCommand() {
+        assertEquals(30, this.logic.handleCommand("+30"));
+    }
+    
+    @Test
+    public void negativeIntegerHandleCommand(){
+        assertEquals(-43, this.logic.handleCommand("-43"));
+    }
+    
+    @Test
+    public void incorrectCommandReturnsMinus1(){
+        assertEquals(-1, this.logic.handleCommand("Kissa meni yli laidan"));
     }
 }
