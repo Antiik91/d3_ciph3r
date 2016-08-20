@@ -19,15 +19,22 @@ public class Main {
     public static void main(String[] args) {
         try {
 
-
-          DES desTest = new DES();
-            desTest.generateKey();
-            String key = desTest.getKey();
+            DES des = new DES();
+            des.generateKey();
+            String key = des.getKey();
             System.out.println(key);
+            byte[] b = key.getBytes();
+
+            
+            byte[] lol = des.encrypt("hello world", key);
+
+            System.out.println(new String(lol));
+            System.out.println("Leikitääs: ");
+            
 //            UserInterface ui = new UserInterface(new Scanner(System.in));
-//            ui.run();
-//            System.out.println(desTest.decrypt(secretText));
-        
+            //            ui.run();
+            //            System.out.println(desTest.decrypt(secretText));
+
         } catch (Exception e) {
             e.printStackTrace();
 

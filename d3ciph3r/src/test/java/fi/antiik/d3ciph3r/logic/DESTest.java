@@ -51,26 +51,26 @@ public class DESTest {
     //
     // @Test
     // public void hello() {}
-    @Test(expected = AssertionError.class)
-    public void keyCantBeOver56Bytes() {
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance("DES");
-            kg.init(563);
-            des.setKeyReady(kg.generateKey());
-            
-        } catch (Exception e) {
-            assertEquals(InvalidParameterException.class, e);
-        }
-    }
+//    @Test(expected = AssertionError.class)
+//    public void keyCantBeOver56Bytes() {
+//        try {
+//            KeyGenerator kg = KeyGenerator.getInstance("DES");
+//            kg.init(563);
+//            des.setKeyReady(kg.generateKey());
+//            
+//        } catch (Exception e) {
+//            assertEquals(InvalidParameterException.class, e);
+//        }
+//    }
     
-    @Test(expected = AssertionError.class)
-    public void keyCantBeunder56Bytes() {
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance("DES");
-            kg.init(2);
-            des.setKeyReady(kg.generateKey());
-        } catch (Exception e) {
-            assertEquals(InvalidParameterException.class, e);
-        }
-    }
+//    @Test(expected = AssertionError.class)
+//    public void keyCantBeunder56Bytes() {
+//        try {
+//            KeyGenerator kg = KeyGenerator.getInstance("DES");
+//            kg.init(2);
+//            des.setKeyReady(kg.generateKey());
+//        } catch (Exception e) {
+//            assertEquals(InvalidParameterException.class, e);
+//        }
+//    }
 }

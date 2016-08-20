@@ -1,11 +1,9 @@
 package fi.antiik.d3ciph3r.logic;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
+
 import javax.crypto.SecretKey;
 
 /**
@@ -20,8 +18,13 @@ public class DES {
 
     private SecretKey keyReady;
     private static Cipher cipher;
-    private String key = "";
-
+    private String keyString = "";
+    private byte[] keyByte;
+    /**
+     * Permutation Choice 1. Used to permute the 64-bit key according to the
+     * following table. Note that every 8 bits are discarded therefore only 56
+     * bits of the original key appear in permuted key.
+     */
     private int[] PC1 = {
         57, 49, 41, 33, 25, 17, 9,
         1, 58, 50, 42, 34, 26, 18,
@@ -32,26 +35,11 @@ public class DES {
         14, 6, 61, 53, 45, 37, 29,
         21, 13, 5, 28, 20, 12, 4
     };
-    private int[] initialPermutation = {
-        58, 50, 42, 34, 26, 18, 10, 2,
-        60, 52, 44, 36, 28, 20, 12, 4,
-        62, 54, 46, 38, 30, 22, 14, 6,
-        64, 56, 48, 40, 32, 24, 16, 8,
-        57, 49, 41, 33, 25, 17, 9, 1,
-        59, 51, 43, 35, 27, 19, 11, 3,
-        61, 53, 45, 37, 29, 21, 13, 5,
-        63, 55, 47, 39, 31, 23, 15, 7
-    };
-    private int[] finalPermutation = {
-        40, 8, 48, 16, 56, 24, 64, 32,
-        39, 7, 47, 15, 55, 23, 63, 31,
-        38, 6, 46, 14, 54, 22, 62, 30,
-        37, 5, 45, 13, 53, 21, 61, 29,
-        36, 4, 44, 12, 52, 20, 60, 28,
-        35, 3, 43, 11, 51, 19, 59, 27,
-        34, 2, 42, 10, 50, 18, 58, 26,
-        33, 1, 41, 9, 49, 17, 57, 25
-    };
+
+    /**
+     * Permute choice 2. Used to pemute CnDn pairs (56 bits) to 48 bit subkey.
+     * every 8. bit is discarded.
+     */
     private int[] PC2 = {
         14, 17, 11, 24, 1, 5,
         3, 28, 15, 6, 21, 10,
@@ -62,7 +50,46 @@ public class DES {
         44, 49, 39, 56, 34, 53,
         46, 42, 50, 36, 29, 32
     };
-    private int[] eBitSelectionTable = {
+
+    /**
+     * Number of left shifts to be shifted in Cn and Dn (See createSubKeys())
+     */
+    private int[] shitfs = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+
+    /**
+     * Initial permutation. Permutes 64 bits of message data. Rearranges the
+     * bits according to the table.
+     */
+    private int[] IP = {
+        58, 50, 42, 34, 26, 18, 10, 2,
+        60, 52, 44, 36, 28, 20, 12, 4,
+        62, 54, 46, 38, 30, 22, 14, 6,
+        64, 56, 48, 40, 32, 24, 16, 8,
+        57, 49, 41, 33, 25, 17, 9, 1,
+        59, 51, 43, 35, 27, 19, 11, 3,
+        61, 53, 45, 37, 29, 21, 13, 5,
+        63, 55, 47, 39, 31, 23, 15, 7
+    };
+
+    /**
+     * Final permutation also nown as FI ^-1
+     */
+    private int[] FP = {
+        40, 8, 48, 16, 56, 24, 64, 32,
+        39, 7, 47, 15, 55, 23, 63, 31,
+        38, 6, 46, 14, 54, 22, 62, 30,
+        37, 5, 45, 13, 53, 21, 61, 29,
+        36, 4, 44, 12, 52, 20, 60, 28,
+        35, 3, 43, 11, 51, 19, 59, 27,
+        34, 2, 42, 10, 50, 18, 58, 26,
+        33, 1, 41, 9, 49, 17, 57, 25
+    };
+
+    /**
+     *
+     * used in the Feistel function. this expands 32 bits to 48 bits.
+     */
+    private int[] EbitTable = {
         32, 1, 2, 3, 4, 5,
         4, 5, 6, 7, 8, 9,
         8, 9, 10, 11, 12, 13,
@@ -73,7 +100,24 @@ public class DES {
         28, 29, 30, 31, 32, 1
     };
 
-    private int[][] sBox = {{
+    /*
+     * Permutes 32 bit input.
+     */
+    private int[] P = {
+        16, 7, 20, 21,
+        29, 12, 28, 17,
+        1, 15, 23, 26,
+        5, 18, 31, 10,
+        2, 8, 24, 14,
+        32, 27, 3, 9,
+        19, 13, 30, 6,
+        22, 11, 4, 25
+    };
+
+    /**
+     * Each row takes a 6 bit block as an input and makes it 4-bit output.
+     */
+    private byte[][] sBox = {{
         14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
         0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8,
         4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0,
@@ -115,54 +159,132 @@ public class DES {
         2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11
     }
     };
-    private int[] shitfs = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
     public DES() throws Exception {
 
-        this.cipher = Cipher.getInstance("DES");
-     //   this.key = key.getBytes();
-
     }
 
-    public SecretKey getKeyReady() {
-        return keyReady;
-    }
-
-    public void setKeyReady(SecretKey keyReady) {
-        this.keyReady = keyReady;
-    }
-
-    private void createSubKeys() {
-       int byteS, shiftSize;
-        for (int i = 0; i < 56; i++) {
-            shiftSize = PC1[i];
-            byteS = 0x80 >>((shiftSize- 1)%8);
-        //S    byteS &= this.key[(shiftSize -1)/8];
+    /**
+     * Meethod is used to create set of subkeys from the original 56-bit key.
+     * First it permutest the key using PC-1. after that the Permuted key splits
+     * in half as c and d each of them 28-bits. After that the c and d subkeys'
+     * bits gets shifted 16 times according to shift table. Each of the shifts
+     * makes a new subkey c0 d0 ... c16 d16. Each of them is then concatenated
+     * cndn (56 bits) and permutted using PC-2.
+     *
+     * @param key original 64-bit key.
+     * @return array of subkeys to be used in feistel function.
+     */
+    private byte[][] createSubKeys(byte[] key) {
+        byte[] permutatedKey = permute(PC1, key);
+        byte[][] subKeys = new byte[16][];
+        byte[] c = new byte[28];
+        byte[] d = new byte[28];
+        for (int i = 0; i < 28; i++) {
+            int valueC = getBit(permutatedKey, i);
+            int valueD = getBit(permutatedKey, 28 + i);
+            setBit(c, i, valueC);
+            setBit(d, 28 + i, valueD);
         }
+        for (int i = 0; i < 16; i++) {
+            c = rotateShift(c, shitfs[i]);
+            d = rotateShift(d, shitfs[i]);
 
+            // Concatenate
+            // Permute using PC-2
+        }
+        return subKeys;
     }
-    public void generateKey(){
+
+    /**
+     * left shifts is rotated trough this method.
+     *
+     * @param data Cn or Dn.
+     * @param shift number of left shifts to be made in new
+     * @return new half of a subkey.
+     */
+    private byte[] rotateShift(byte[] data, int shift) {
+        byte[] shifted = new byte[data.length];
+        return shifted;
+    }
+
+    /**
+     * Permutation method. permutes the data with given table.
+     *
+     * @param table table used to permute data.
+     * @param data data to be permuted.
+     * @return permuted data.
+     */
+    private byte[] permute(int[] table, byte[] data) {
+        byte[] permuted = new byte[table.length - 1 / 8 + 1];
+        for (int i = 0; i < table.length; i++) {
+            int value = getBit(data, table[i]);
+            setBit(permuted, i, value);
+        }
+        return permuted;
+    }
+
+    /**
+     * Method to help to get the wanted bit out of data.
+     *
+     * @param data data where the bit gets extracted.
+     * @param position position where the bit is located.
+     * @return wanted bit as int.
+     */
+    private int getBit(byte[] data, int position) {
+        int bytePosition = position / 8;
+        int bitPosition = position % 8;
+        byte temp = data[bytePosition];
+        return temp >> (8 - (bitPosition + 1)) & 0x0001;
+    }
+
+    /**
+     * Method to help to set wanted bit to the data.
+     *
+     * @param data data where the bit to be placed.
+     * @param position position where the bit needs to be placed.
+     * @param value bit as int.
+     */
+    private void setBit(byte[] data, int position, int value) {
+        int bytePosition = position / 8;
+        int bitPosition = position % 8;
+        byte tmp = data[bytePosition];
+        tmp = (byte) (((0xFF7F >> bitPosition) & tmp) & 0x00F);
+        byte newByte = (byte) ((value << (8 - (bitPosition + 1))) | tmp);
+        data[bytePosition] = newByte;
+    }
+
+    /**
+     * The bread and butter of the DES. First expands the right side of the
+     * 64-bit long message. 32 bits to 48 bits by using Ebit selection table.
+     * After that method XORs the permuted result and subkey. Now we have 48
+     * bits / eight group of 6-bits. These give as an addres of a different S
+     * box. From the addres is found 3 bit number and it will replace original 6
+     * bits.
+     *
+     * @param rightSide Right side of the message.
+     * @param subKey subkey.
+     * @return
+     */
+    private byte[] feistel(byte[] rightSide, byte[] subKey) {
+        byte[] permuted;
+        permuted = permute(EbitTable, rightSide);
+        for (int i = 0; i < permuted.length; i++) {
+            permuted[i] = (byte) (permuted[i] ^ subKey[i]);
+        }
+        permuted = permute(P, permuted);
+        // TODO: lots of things..
+        return permuted;
+    }
+
+    /**
+     * Generates the new 64 bit random key.
+     */
+    public void generateKey() {
         Random random = new Random();
         for (int i = 0; i < 8; i++) {
-            this.key += (char) random.nextInt(127);
+            this.keyString += (char) random.nextInt(127);
         }
-    }
-
-    public String getKey() {
-        return this.key;
-    }
-    /**
-     * Generates a new secret keyReady (56 bits) to be used both encryption and
-     * dectypion of the data.
-     *
-     * @throws Exception
-     */
-    private void initializeKey() throws Exception {
-
-        KeyGenerator kg = KeyGenerator.getInstance("DES");
-        kg.init(56);
-        this.keyReady = kg.generateKey();
-
     }
 
     /**
@@ -173,9 +295,7 @@ public class DES {
      * @throws Exception
      */
     public String decrypt(byte[] bits) throws Exception {
-
-        this.cipher.init(Cipher.DECRYPT_MODE, keyReady);
-        return new String(this.cipher.doFinal(bits), "UTF-8");
+        return null;
 
     }
 
@@ -187,11 +307,13 @@ public class DES {
      * @return byte array of crypted data.
      * @throws Exception
      */
-    public byte[] encrypt(String plaintext) throws Exception {
+    public byte[] encrypt(String plaintext, String key) throws Exception {
 
-        initializeKey();
-        this.cipher.init(Cipher.ENCRYPT_MODE, this.keyReady);
-        return this.cipher.doFinal(plaintext.getBytes("UTF-8"));
+        return null;
 
+    }
+
+    public String getKey() {
+        return this.keyString;
     }
 }
