@@ -216,7 +216,7 @@ public class DES {
      * @return permuted data.
      */
     private byte[] permute(int[] table, byte[] data) {
-        byte[] permuted = new byte[table.length - 1 / 8 + 1];
+        byte[] permuted = new byte[table.length];
         for (int i = 0; i < table.length; i++) {
             int value = getBit(data, table[i]);
             setBit(permuted, i, value);
@@ -234,8 +234,8 @@ public class DES {
     private int getBit(byte[] data, int position) {
         int bytePosition = position / 8;
         int bitPosition = position % 8;
-        byte temp = data[bytePosition];
-        return temp >> (8 - (bitPosition + 1)) & 0x0001;
+        byte bit = data[bytePosition];
+        return bit >> (8 - (bitPosition + 1)) & 0x0001;
     }
 
     /**
@@ -248,9 +248,9 @@ public class DES {
     private void setBit(byte[] data, int position, int value) {
         int bytePosition = position / 8;
         int bitPosition = position % 8;
-        byte tmp = data[bytePosition];
-        tmp = (byte) (((0xFF7F >> bitPosition) & tmp) & 0x00F);
-        byte newByte = (byte) ((value << (8 - (bitPosition + 1))) | tmp);
+        byte bit = data[bytePosition];
+        bit = (byte) (((0xFF7F >> bitPosition) & bit) & 0x00F);
+        byte newByte = (byte) ((value << (8 - (bitPosition + 1))) | bit);
         data[bytePosition] = newByte;
     }
 
@@ -273,7 +273,7 @@ public class DES {
             permuted[i] = (byte) (permuted[i] ^ subKey[i]);
         }
         permuted = permute(P, permuted);
-        // TODO: lots of things..
+        // TODO: Substitutions, final permutation. 
         return permuted;
     }
 
