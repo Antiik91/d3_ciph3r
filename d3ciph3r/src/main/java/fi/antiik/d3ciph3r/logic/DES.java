@@ -1,5 +1,6 @@
 package fi.antiik.d3ciph3r.logic;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import javax.crypto.Cipher;
@@ -16,10 +17,10 @@ import javax.crypto.SecretKey;
  */
 public class DES {
 
-    private SecretKey keyReady;
-    private static Cipher cipher;
     private String keyString = "";
-    private byte[] keyByte;
+    private byte[] key;
+    private byte[][] subKeys;
+
     /**
      * Permutation Choice 1. Used to permute the 64-bit key according to the
      * following table. Note that every 8 bits are discarded therefore only 56
@@ -190,10 +191,29 @@ public class DES {
             c = rotateShift(c, shitfs[i]);
             d = rotateShift(d, shitfs[i]);
 
-            // Concatenate
-            // Permute using PC-2
+            byte[] subKey = concatenate(c, d);
+            subKey = permute(PC2, subKey);
+            subKeys[i] = subKey;
         }
         return subKeys;
+    }
+
+    /**
+     * Concatenates the halved Cn and Dn into one Subkey.
+     *
+     * @param c left half of the key
+     * @param d right half of the key
+     * @return concatenated subkey
+     */
+    public byte[] concatenate(byte[] c, byte[] d) {
+        byte[] subKey = new byte[c.length + d.length];
+        for (int i = 0; i < subKey.length; i++) {
+            int cBit = getBit(c, i);
+            int dBit = getBit(d, i);
+            setBit(subKey, i, cBit);
+            setBit(subKey, d.length + i, dBit);
+        }
+        return subKey;
     }
 
     /**
@@ -205,6 +225,10 @@ public class DES {
      */
     private byte[] rotateShift(byte[] data, int shift) {
         byte[] shifted = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            int bit = getBit(data, (i + shift) % data.length);
+            setBit(shifted, i, bit);
+        }
         return shifted;
     }
 
@@ -216,9 +240,9 @@ public class DES {
      * @return permuted data.
      */
     private byte[] permute(int[] table, byte[] data) {
-        byte[] permuted = new byte[table.length];
+        byte[] permuted = new byte[(table.length - 1) / 8 +1];
         for (int i = 0; i < table.length; i++) {
-            int value = getBit(data, table[i]);
+            int value = getBit(data, table[i] - 1);
             setBit(permuted, i, value);
         }
         return permuted;
@@ -231,7 +255,8 @@ public class DES {
      * @param position position where the bit is located.
      * @return wanted bit as int.
      */
-    private int getBit(byte[] data, int position) {
+    private int getBit(byte[] data, int position ) {
+  
         int bytePosition = position / 8;
         int bitPosition = position % 8;
         byte bit = data[bytePosition];
@@ -272,9 +297,71 @@ public class DES {
         for (int i = 0; i < permuted.length; i++) {
             permuted[i] = (byte) (permuted[i] ^ subKey[i]);
         }
+        //permuted = substitution(permuted);
         permuted = permute(P, permuted);
-        // TODO: Substitutions, final permutation. 
         return permuted;
+    }
+
+    
+    // DOESNT WORK CORRECTLY ATM 
+    private byte[] substitution(byte[] data) {
+        // seperate  block of data and divide it to eight bit groups. number of bits.
+        int length = 8 * data.length;
+        byte[] substituted = new byte[length];
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < 6; j++) {
+                int bit = getBit(data, i);
+                setBit(substituted, 8 * i + j, bit);
+            }
+        }
+        int a = 0;
+        for (int i = 0; i < data.length; i++) {
+            byte val = data[i];
+            int position = 2 * (val >> 7 & 0x0001) + (val >> 2 & 0x001) + (val >> 3 & 0x000F);
+            int sub = sBox[val][position];
+            if (i % 2 == 0) {
+                a = sub;
+            } else {
+                substituted[i / 2] = (byte) (16 * a + sub);
+            }
+        }
+
+        return substituted;
+    }
+
+    private byte[] blocCryption(byte[] data, boolean encryption) {
+        if (this.subKeys == null) {
+            this.subKeys = createSubKeys(this.key);
+        }
+
+        byte[] crypted = permute(IP, data);
+        byte[] right = new byte[data.length / 2];
+        byte[] left = new byte[data.length / 2];
+        for (int i = 0; i < data.length; i++) {
+            int valueRight = getBit(data, i);
+            int valueLeft = getBit(data, 28 + i);
+            setBit(right, i, valueRight);
+            setBit(left,  i, valueLeft);
+        }
+        // Do the 16 rounds needed to encrypt Decrypt;
+        for (int i = 0; i < 16; i++) {
+            round(right, left, i, encryption);
+        }
+        crypted = concatenate(right, left);
+        return crypted;
+    }
+
+    private void round(byte[] right, byte[] left, int round, boolean encryption) {
+        byte[] lastRight = right;
+        if (encryption) {
+            right = feistel(right, this.subKeys[round]);
+        } else {
+            right = feistel(right, this.subKeys[15 - round]);
+        }
+        for (int i = 0; i < right.length; i++) {
+            right[i] = (byte) (right[i] ^ left[i]);
+        }
+        left = lastRight;
     }
 
     /**
@@ -307,10 +394,28 @@ public class DES {
      * @return byte array of crypted data.
      * @throws Exception
      */
-    public byte[] encrypt(String plaintext, String key) throws Exception {
+    public String encrypt(String plaintext, String key, boolean encrypt) throws Exception {
+        this.key = key.getBytes();
+        byte[] plaintxt = plaintext.getBytes();
+        byte[] crypted = cryptData(plaintxt, encrypt);
+        
+        return new String(crypted, StandardCharsets.UTF_8);
 
-        return null;
+    }
 
+    public byte[] cryptData(byte[] data, boolean encrypt) {
+        //Seperate the data for 64 bits of data.
+        int blocks = data.length / 64;
+        byte[] cryptedData = new byte[data.length];
+        byte[] block = new byte[64];
+//        for (int i = 0; i < blocks; i++) {
+//            for (int j = 0; j < 64; j++) {
+//                int valBit = getBit(data, i * j);
+//                setBit(block, j, valBit);
+//            }
+            cryptedData = blocCryption(data, encrypt);
+//        }
+        return cryptedData;
     }
 
     public String getKey() {

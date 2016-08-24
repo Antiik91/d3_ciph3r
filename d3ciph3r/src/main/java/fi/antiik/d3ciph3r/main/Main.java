@@ -21,16 +21,17 @@ public class Main {
 
             DES des = new DES();
             des.generateKey();
-            String key = des.getKey();
-            System.out.println(key);
-            byte[] b = key.getBytes();
-
-            
-            byte[] lol = des.encrypt("hello world", key);
-
-            System.out.println(new String(lol));
-            System.out.println("Leikitääs: ");
-            
+            String key = "NeedAKey";
+           
+           String encryptHello = des.encrypt("HelloWor", key, false);
+            System.out.println("Size of the encryption. " + encryptHello.length());
+            System.out.println(encryptHello);
+            String decryptHello = des.encrypt(encryptHello, key, true);
+            System.out.println("Decrytped: " + decryptHello);
+            System.out.println("size of the decryp "+ decryptHello.length());
+            for (int i = 0; i < encryptHello.length(); i++) {
+                System.out.println("CHARACTER " + i + ": " + encryptHello.charAt(i));
+            }
 //            UserInterface ui = new UserInterface(new Scanner(System.in));
             //            ui.run();
             //            System.out.println(desTest.decrypt(secretText));
