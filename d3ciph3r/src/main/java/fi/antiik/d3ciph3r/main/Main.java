@@ -22,16 +22,31 @@ public class Main {
             DES des = new DES();
             des.generateKey();
             String key = "NeedAKey";
-           
-           String encryptHello = des.encrypt("HelloWor", key, false);
-            System.out.println("Size of the encryption. " + encryptHello.length());
-            System.out.println(encryptHello);
-            String decryptHello = des.encrypt(encryptHello, key, true);
-            System.out.println("Decrytped: " + decryptHello);
-            System.out.println("size of the decryp "+ decryptHello.length());
-            for (int i = 0; i < encryptHello.length(); i++) {
-                System.out.println("CHARACTER " + i + ": " + encryptHello.charAt(i));
+           String hello = "abcdefgh";
+           byte[] h = hello.getBytes();
+            System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
+            for (byte i : h) {
+                System.out.print( i+ ", ");
             }
+            System.out.println("");
+           byte[] encryptHello = des.encrypt("HelloWor", key, true);
+            System.out.println("+++   ENCRYPTED STRING IN BYTES    +++");
+            for (byte f : encryptHello) {
+                System.out.print(f + ", ");
+            }
+            String test = new String(encryptHello, "UTF-8");
+            System.out.println(test + " MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            System.out.println("");
+            byte[][] hey = des.getSubKeys();
+            des.setSubKeys(hey);
+            String lol = new String(encryptHello, "UTF-8");
+            byte[] decryptHello = des.encrypt(lol, key, false);
+            System.out.println("+++   DECRYPTED STRING IN BYTES   +++");
+            for (byte e : decryptHello) {
+                System.out.print(e + ", ");
+            }
+            System.out.println("");
+            System.out.println("END OF PROGRAM");
 //            UserInterface ui = new UserInterface(new Scanner(System.in));
             //            ui.run();
             //            System.out.println(desTest.decrypt(secretText));

@@ -179,21 +179,23 @@ public class DES {
     private byte[][] createSubKeys(byte[] key) {
         byte[] permutatedKey = permute(PC1, key);
         byte[][] subKeys = new byte[16][];
-        byte[] c = new byte[28];
-        byte[] d = new byte[28];
-        for (int i = 0; i < 28; i++) {
-            int valueC = getBit(permutatedKey, i);
-            int valueD = getBit(permutatedKey, 28 + i);
-            setBit(c, i, valueC);
-            setBit(d, 28 + i, valueD);
-        }
-        for (int i = 0; i < 16; i++) {
-            c = rotateShift(c, shitfs[i]);
-            d = rotateShift(d, shitfs[i]);
+        byte[] c = extractB(permutatedKey, 0, PC1.length / 2);
+        byte[] d = extractB(permutatedKey, PC1.length / 2, PC1.length / 2);
+//        byte[] c = new byte[28];
+//        byte[] d = new byte[28];
+//        for (int i = 0; i < 28; i++) {
+//            int valueC = getBit(permutatedKey, i);
+//            int valueD = getBit(permutatedKey, 28 + i);
+//            setBit(c, i, valueC);
+//            setBit(d, 28 + i, valueD);
+//        }
+        for (int j = 0; j < 16; j++) {
+            c = rotateShift(c, shitfs[j], 28);
+            d = rotateShift(d, shitfs[j], 28);
 
-            byte[] subKey = concatenate(c, d);
+            byte[] subKey = concatenate(c, 28, d, 28);
             subKey = permute(PC2, subKey);
-            subKeys[i] = subKey;
+            subKeys[j] = subKey;
         }
         return subKeys;
     }
@@ -205,9 +207,10 @@ public class DES {
      * @param d right half of the key
      * @return concatenated subkey
      */
-    public byte[] concatenate(byte[] c, byte[] d) {
-        byte[] subKey = new byte[c.length + d.length];
-        for (int i = 0; i < subKey.length; i++) {
+    public byte[] concatenate(byte[] c, int clen, byte[] d, int dlen) {
+        byte[] subKey = new byte[(clen + dlen - 1) / 8 + 1];
+
+        for (int i = 0; i < c.length; i++) {
             int cBit = getBit(c, i);
             int dBit = getBit(d, i);
             setBit(subKey, i, cBit);
@@ -223,10 +226,10 @@ public class DES {
      * @param shift number of left shifts to be made in new
      * @return new half of a subkey.
      */
-    private byte[] rotateShift(byte[] data, int shift) {
-        byte[] shifted = new byte[data.length];
-        for (int i = 0; i < data.length; i++) {
-            int bit = getBit(data, (i + shift) % data.length);
+    private byte[] rotateShift(byte[] data, int shift, int len) {
+        byte[] shifted = new byte[(len - 1) / 8 + 1];
+        for (int i = 0; i < len; i++) {
+            int bit = getBit(data, (i + shift) % len);
             setBit(shifted, i, bit);
         }
         return shifted;
@@ -240,7 +243,7 @@ public class DES {
      * @return permuted data.
      */
     private byte[] permute(int[] table, byte[] data) {
-        byte[] permuted = new byte[(table.length - 1) / 8 +1];
+        byte[] permuted = new byte[(table.length - 1) / 8 + 1];
         for (int i = 0; i < table.length; i++) {
             int value = getBit(data, table[i] - 1);
             setBit(permuted, i, value);
@@ -255,12 +258,13 @@ public class DES {
      * @param position position where the bit is located.
      * @return wanted bit as int.
      */
-    private int getBit(byte[] data, int position ) {
-  
+    private int getBit(byte[] data, int position) {
+
         int bytePosition = position / 8;
         int bitPosition = position % 8;
         byte bit = data[bytePosition];
-        return bit >> (8 - (bitPosition + 1)) & 0x0001;
+        int value = bit >> (8 - (bitPosition + 1)) & 0x0001;
+        return value;
     }
 
     /**
@@ -294,15 +298,12 @@ public class DES {
     private byte[] feistel(byte[] rightSide, byte[] subKey) {
         byte[] permuted;
         permuted = permute(EbitTable, rightSide);
-        for (int i = 0; i < permuted.length; i++) {
-            permuted[i] = (byte) (permuted[i] ^ subKey[i]);
-        }
-        //permuted = substitution(permuted);
+        permuted = xor(permuted, subKey);
+        permuted = substitution(permuted);
         permuted = permute(P, permuted);
         return permuted;
     }
 
-    
     // DOESNT WORK CORRECTLY ATM 
     private byte[] substitution(byte[] data) {
         // seperate  block of data and divide it to eight bit groups. number of bits.
@@ -318,7 +319,7 @@ public class DES {
         for (int i = 0; i < data.length; i++) {
             byte val = data[i];
             int position = 2 * (val >> 7 & 0x0001) + (val >> 2 & 0x001) + (val >> 3 & 0x000F);
-            int sub = sBox[val][position];
+            int sub = sBox[position][val];
             if (i % 2 == 0) {
                 a = sub;
             } else {
@@ -329,6 +330,17 @@ public class DES {
         return substituted;
     }
 
+    private byte[] extractB(byte[] data, int position, int n) {
+        int bytes = (n - 1) / 8 + 1;
+        byte[] output = new byte[bytes];
+        for (int i = 0; i < n; i++) {
+            int j = getBit(data, position + i);
+            setBit(output, i, j);
+        }
+        return output;
+
+    }
+
     private byte[] blocCryption(byte[] data, boolean encryption) {
         if (this.subKeys == null) {
             this.subKeys = createSubKeys(this.key);
@@ -337,31 +349,37 @@ public class DES {
         byte[] crypted = permute(IP, data);
         byte[] right = new byte[data.length / 2];
         byte[] left = new byte[data.length / 2];
-        for (int i = 0; i < data.length; i++) {
-            int valueRight = getBit(data, i);
-            int valueLeft = getBit(data, 28 + i);
-            setBit(right, i, valueRight);
-            setBit(left,  i, valueLeft);
-        }
+
+        left = extractB(crypted, 0, IP.length / 2);
+        right = extractB(crypted, IP.length / 2, IP.length / 2);
         // Do the 16 rounds needed to encrypt Decrypt;
         for (int i = 0; i < 16; i++) {
-            round(right, left, i, encryption);
+//            round(right, left, i, encryption);
+
+            byte[] lastRight = right;
+            if (encryption) {
+                right = feistel(right, this.subKeys[i]);
+            } else {
+                right = feistel(right, this.subKeys[15 - i]);
+            }
+            right = xor(left, right);
+            left = lastRight;
         }
-        crypted = concatenate(right, left);
+        crypted = concatenate(right, IP.length / 2, left, IP.length / 2);
+        crypted = permute(FP, crypted);
         return crypted;
     }
 
+    private byte[] xor(byte[] a, byte[] b) {
+        byte[] xorred = new byte[a.length];
+        for (int i = 0; i < a.length; i++) {
+            xorred[i] = (byte) (a[i] ^ b[i]);
+        }
+        return xorred;
+    }
+
     private void round(byte[] right, byte[] left, int round, boolean encryption) {
-        byte[] lastRight = right;
-        if (encryption) {
-            right = feistel(right, this.subKeys[round]);
-        } else {
-            right = feistel(right, this.subKeys[15 - round]);
-        }
-        for (int i = 0; i < right.length; i++) {
-            right[i] = (byte) (right[i] ^ left[i]);
-        }
-        left = lastRight;
+
     }
 
     /**
@@ -394,13 +412,21 @@ public class DES {
      * @return byte array of crypted data.
      * @throws Exception
      */
-    public String encrypt(String plaintext, String key, boolean encrypt) throws Exception {
+    public byte[] encrypt(String plaintext, String key, boolean encrypt) throws Exception {
         this.key = key.getBytes();
-        byte[] plaintxt = plaintext.getBytes();
-        byte[] crypted = cryptData(plaintxt, encrypt);
-        
-        return new String(crypted, StandardCharsets.UTF_8);
+        byte[] plainBytes = plaintext.getBytes();
+        byte[] crypted = cryptData(plainBytes, encrypt);
 
+        return crypted;
+
+    }
+
+    public byte[][] getSubKeys() {
+        return subKeys;
+    }
+
+    public void setSubKeys(byte[][] subKeys) {
+        this.subKeys = subKeys;
     }
 
     public byte[] cryptData(byte[] data, boolean encrypt) {
@@ -413,7 +439,7 @@ public class DES {
 //                int valBit = getBit(data, i * j);
 //                setBit(block, j, valBit);
 //            }
-            cryptedData = blocCryption(data, encrypt);
+        cryptedData = blocCryption(data, encrypt);
 //        }
         return cryptedData;
     }
