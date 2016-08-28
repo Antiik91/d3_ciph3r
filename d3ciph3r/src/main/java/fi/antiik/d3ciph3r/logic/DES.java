@@ -161,26 +161,33 @@ public class DES {
     }
 
     /**
-     * Meethod is used to create set of subkeys from the original 56-bit key.
-     * First it permutest the key using PC-1. after that the Permuted key splits
-     * in half as c and d each of them 28-bits. After that the c and d subkeys'
-     * bits gets shifted 16 times according to shift table. Each of the shifts
-     * makes a new subkey c0 d0 ... c16 d16. Each of them is then concatenated
-     * cndn (56 bits) and permutted using PC-2.
+     * Method is used to create set of subkeys from the original 56-bit key.
+     * First it permutes the key using PC-1 array. after that the Permuted key
+     * splits in half as c and d each of them 28-bits. After that the c and d
+     * subkeys' bits gets shifted 16 times according to shift table. Each of the
+     * shifts makes a new subkey c0 d0 ... c16 d16. Each of them is then
+     * concatenated cndn (56 bits) and permutted using PC-2.
      *
      * @param key original 64-bit key.
      * @return array of subkeys to be used in feistel function.
      */
     private byte[][] createSubKeys(byte[] key) {
+        //First we permute the original, 56 bit to 48 bit "key+", discarding every 8th bit. 
         byte[] permutatedKey = permute(PC1, key);
         byte[][] subKeys = new byte[16][];
+        // use helper method to divide the key+ into two halves, c and d
         byte[] c = getSetOfBits(permutatedKey, 0, PC1.length / 2);
         byte[] d = getSetOfBits(permutatedKey, PC1.length / 2, PC1.length / 2);
+        // Then rotate those halves 1 or 2 bits according to the shifts table.
+        //depending on the round
         for (int j = 0; j < 16; j++) {
             c = rotateShift(c, shitfs[j]);
             d = rotateShift(d, shitfs[j]);
 
+            // use concatenate to make the subkey from two halves
             byte[] subKey = concatenate(c, d, 28);
+
+            //Then permute this newly formed subkey according to PC2 table, and add it to the subkeys list.
             subKey = permute(PC2, subKey);
             subKeys[j] = subKey;
         }
@@ -188,28 +195,29 @@ public class DES {
     }
 
     /**
-     * Concatenates the halved Cn and Dn into one Subkey.
+     * Concatenates the halved data into one.
      *
-     * @param dataA left half of the key
-     * @param dataB right half of the key
+     * @param dataA left half of the data
+     * @param dataB right half of the data
      * @param len Lenght of the datasets.
-     * @return concatenated subkey
+     * @return concatenated data
      */
     public byte[] concatenate(byte[] dataA, byte[] dataB, int len) {
         byte[] concatenated = new byte[(len + len - 1) / 8 + 1];
 
+        //use helper methods to get the bits from  A and B and set those bits into the concatenaded array.
         for (int i = 0; i < len; i++) {
-            int cBit = getBit(dataA, i);
-            int dBit = getBit(dataB, i);
-            setBit(concatenated, i, cBit);
-            setBit(concatenated, len + i, dBit);
+            int aBit = getBit(dataA, i);
+            int bBit = getBit(dataB, i);
+            setBit(concatenated, i, aBit);
+            setBit(concatenated, len + i, bBit);
         }
 
         return concatenated;
     }
 
     /**
-     * left shifts is rotated trough this method.
+     * left shifts from creating subkeys is rotated trough this method.
      *
      * @param data Cn or Dn.
      * @param shift number of left shifts to be made in new
@@ -218,6 +226,7 @@ public class DES {
     private byte[] rotateShift(byte[] data, int shift) {
         byte[] shifted = new byte[(28 - 1) / 8 + 1];
         for (int i = 0; i < 28; i++) {
+            // get the bit from data (c or d half) and set it to the shifted array.
             int bit = getBit(data, (i + shift) % 28);
             setBit(shifted, i, bit);
         }
@@ -225,7 +234,8 @@ public class DES {
     }
 
     /**
-     * Permutation method. permutes the data with given table.
+     * Permutation method. permutes the data with given table. Get the bit from
+     * data and set it to the permuted data.
      *
      * @param table table used to permute data.
      * @param data data to be permuted.
@@ -286,9 +296,16 @@ public class DES {
      */
     private byte[] feistel(byte[] rightSide, byte[] subKey) {
         byte[] permuted;
+        //First we expand the message, with E-bit selection table, which uses
+        // multiple same integers we use to expand the message.
         permuted = permute(EbitTable, rightSide);
+        // After that we use xor method to generate random  data which is combined
+        //from permuted right side and subkeys bits.
         permuted = xor(permuted, subKey);
+        // Use the substitution table to substitute and further scramble the data.
+
 //        permuted = substitution(permuted);
+        // last we permute trhough P table the data and return it
         permuted = permute(P, permuted);
         return permuted;
     }
@@ -321,13 +338,15 @@ public class DES {
 
         return substituted;
     }
-/**
- * Method to help to get multible bits from data.
- * @param data data where the bits are taken.
- * @param position
- * @param n
- * @return 
- */
+
+    /**
+     * Method to help to get multible bits from data.
+     *
+     * @param data data where the bits are taken.
+     * @param position
+     * @param n
+     * @return data where the bits are in right order.
+     */
     private byte[] getSetOfBits(byte[] data, int position, int n) {
         int bytes = (n - 1) / 8 + 1;
         byte[] output = new byte[bytes];
@@ -338,16 +357,20 @@ public class DES {
         return output;
 
     }
-/**
- * Crypt the 64 bit bloc of data. 
- * @param data bloc of data
- * @param encryption if true, we are encrypting, else we are decrypting.
- * @return crypted bloc
- */
+
+    /**
+     * Crypt the 64 bit bloc of data.
+     *
+     * @param data bloc of data
+     * @param encryption if true, we are encrypting, else we are decrypting.
+     * @return crypted bloc
+     */
     private byte[] cryptBloc(byte[] data, boolean encryption) {
+        // We need the subkeys in order to crypitng to work
         if (this.subKeys == null) {
             this.subKeys = createSubKeys(this.key);
         }
+        // First we permute the data with IP table.
         byte[] crypted = permute(IP, data);
 
         //split the message in half ( 64bits to 32 bits)
@@ -361,9 +384,10 @@ public class DES {
             } else {
                 right = decryptionRound(right, left, i);
             }
+
             left = lastRight;
         }
-        
+
         crypted = concatenate(right, left, 32);
         crypted = permute(FP, crypted);
         return crypted;
@@ -376,27 +400,31 @@ public class DES {
         }
         return xorred;
     }
-/**
- * If we need to encrypt text, we use this round to encrypt the right side.
- * @param right message data's right side.
- * @param left message data's left sied.
- * @param round number of rounds is used.
- * @return  new scrambled right side of the message.
- */
+
+    /**
+     * If we need to encrypt text, we use this round to encrypt the right side.
+     *
+     * @param right message data's right side.
+     * @param left message data's left sied.
+     * @param round number of rounds is used.
+     * @return new scrambled right side of the message.
+     */
     private byte[] encryptionRound(byte[] right, byte[] left, int round) {
         right = feistel(right, this.subKeys[round]);
-        right = xor(left,right);
+        right = xor(left, right);
         return right;
     }
+
     /**
      * in case of decrypting text, we use this round to decrypt scrambled text.
+     *
      * @param right message data's right side.
      * @param left messge data's left side
      * @param round number of round.
-     * @return  decrypted set.
+     * @return decrypted set.
      */
     private byte[] decryptionRound(byte[] right, byte[] left, int round) {
-        right = feistel(right, this.subKeys[15-round]);
+        right = feistel(right, this.subKeys[15 - round]);
         right = xor(left, right);
         return right;
     }
@@ -420,12 +448,14 @@ public class DES {
      * @throws Exception
      */
     public byte[] decyrpt(String cipherText, String key) throws Exception {
-        if(cipherText.isEmpty()) return null;
-        if(key.isEmpty()) {
+        if (cipherText.isEmpty()) {
+            return null;
+        }
+        if (key.isEmpty()) {
             generateKey();
             this.key = this.keyString.getBytes();
-        }else {
-        this.key = key.getBytes();
+        } else {
+            this.key = key.getBytes();
         }
         byte[] cipher = cipherText.getBytes();
 
@@ -461,7 +491,7 @@ public class DES {
         ArrayCopy.byteCopy(bloc, 0, decrypted, i - 8, bloc.length);
 
         int count = 0;
-        
+
         //removes the padding
         int index = decrypted.length - 1;
         while (decrypted[index] == 0) {
@@ -483,14 +513,14 @@ public class DES {
      * @throws Exception
      */
     public byte[] encrypt(String plaintext, String key) throws Exception {
-        if(plaintext.isEmpty()) {
+        if (plaintext.isEmpty()) {
             return null;
         }
-        if(key.isEmpty()) {
-           generateKey();
-           this.key = this.keyString.getBytes();
+        if (key.isEmpty()) {
+            generateKey();
+            this.key = this.keyString.getBytes();
         } else {
-        this.key = key.getBytes();
+            this.key = key.getBytes();
         }
         byte[] plainBytes = plaintext.getBytes();
         byte[] crypted = cryptData(plainBytes);
@@ -506,11 +536,13 @@ public class DES {
     public void setSubKeys(byte[][] subKeys) {
         this.subKeys = subKeys;
     }
-/**
- * Crypts the data got from encrypt method.
- * @param data data to be encryted.
- * @return  encrypted data aka ciphertext.
- */
+
+    /**
+     * Crypts the data got from encrypt method.
+     *
+     * @param data data to be encryted.
+     * @return encrypted data aka ciphertext.
+     */
     private byte[] cryptData(byte[] data) {
         //Seperate the data for 64 bits of data blocs.
         int len = 8 - data.length % 8;
