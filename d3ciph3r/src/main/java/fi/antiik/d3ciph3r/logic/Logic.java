@@ -69,8 +69,7 @@ public class Logic {
 
     /**
      * Checks that scanner can parse integer from input.
-     *
-     * @param scanner scanner to scan user input.
+     *@param command Command in String.
      * @return -1 if exception, positive input else.
      */
     public int handleCommand(String command) {

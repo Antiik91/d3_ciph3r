@@ -29,24 +29,28 @@ public class Main {
                 System.out.print( i+ ", ");
             }
             System.out.println("");
-           byte[] encryptHello = des.encrypt("HelloWor", key, true);
+            String tesTexT = "Testialgoritmi";
+           
+           byte[] encrypt = des.encrypt(tesTexT, key);
+            System.out.println("Moi, tämän pitäisi olla cryptattu: " + new String(encrypt));
             System.out.println("+++   ENCRYPTED STRING IN BYTES    +++");
-            for (byte f : encryptHello) {
+            for (byte f : encrypt) {
                 System.out.print(f + ", ");
             }
-            String test = new String(encryptHello, "UTF-8");
-            System.out.println(test + " MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             System.out.println("");
             byte[][] hey = des.getSubKeys();
             des.setSubKeys(hey);
-            String lol = new String(encryptHello, "UTF-8");
-            byte[] decryptHello = des.encrypt(lol, key, false);
+            String lol = new String(encrypt, "UTF-8");
+            byte[] decryptHello = des.decryptData(encrypt);
+            System.out.println("Tämän pitäisi olla decryptatty " + new String(decryptHello));
             System.out.println("+++   DECRYPTED STRING IN BYTES   +++");
             for (byte e : decryptHello) {
                 System.out.print(e + ", ");
             }
             System.out.println("");
             System.out.println("END OF PROGRAM");
+            
+
 //            UserInterface ui = new UserInterface(new Scanner(System.in));
             //            ui.run();
             //            System.out.println(desTest.decrypt(secretText));
