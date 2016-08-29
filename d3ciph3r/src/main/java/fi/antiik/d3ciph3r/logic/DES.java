@@ -33,8 +33,8 @@ public class DES {
     };
 
     /**
-     * Permute choice 2. Used to pemute CnDn pairs (56 bits) to 48 bit subkey.
-     * every 8. bit is discarded.
+     * Permute choice 2. Used to pemute halved and shifted from key+ CnDn pairs
+     * (56 bits) to 48 bit subkey. every 8. bit is discarded.
      */
     private int[] PC2 = {
         14, 17, 11, 24, 1, 5,
@@ -54,7 +54,7 @@ public class DES {
 
     /**
      * Initial permutation. Permutes 64 bits of message data. Rearranges the
-     * bits according to the table.
+     * bits according to the table. Is used first when crypting data.
      */
     private int[] IP = {
         58, 50, 42, 34, 26, 18, 10, 2,
@@ -68,7 +68,8 @@ public class DES {
     };
 
     /**
-     * Final permutation also nown as FI ^-1
+     * Final permutation also nown as FI ^-1 After everything else is done the
+     * message is one final time permuted trhough this table.
      */
     private int[] FP = {
         40, 8, 48, 16, 56, 24, 64, 32,
@@ -82,8 +83,8 @@ public class DES {
     };
 
     /**
-     *
-     * used in the Feistel function. this expands 32 bits to 48 bits.
+     * used in the Feistel method. this expands the message's right half from 32
+     * bits to 48 bits.
      */
     private int[] EbitTable = {
         32, 1, 2, 3, 4, 5,
@@ -97,7 +98,7 @@ public class DES {
     };
 
     /*
-     * Permutes 32 bit input.
+     * Permutes 32 bit input. Used in feistel method  after substitution.
      */
     private int[] P = {
         16, 7, 20, 21,
@@ -111,7 +112,12 @@ public class DES {
     };
 
     /**
-     * Each row takes a 6 bit block as an input and makes it 4-bit output.
+     * Each row takes a 6 bit block as an input and makes it 4-bit output. First
+     * and last bit of the data is used to seek up the row and middle four bits
+     * are calcultated to get the column. For example if input is = 011011,
+     * first bit is 0 and last is 1, that gives us the row 1. middle four bits
+     * are equal to 13 so column number is 13. There we found number 5. Thats
+     * the output.
      */
     private byte[][] sBox = {{
         14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
@@ -172,14 +178,14 @@ public class DES {
      * @return array of subkeys to be used in feistel function.
      */
     private byte[][] createSubKeys(byte[] key) {
-        //First we permute the original, 56 bit to 48 bit "key+", discarding every 8th bit. 
+        // First we permute the original, 56 bit to 48 bit "key+", discarding every 8th bit. 
         byte[] permutatedKey = permute(PC1, key);
         byte[][] subKeys = new byte[16][];
         // use helper method to divide the key+ into two halves, c and d
         byte[] c = getSetOfBits(permutatedKey, 0, PC1.length / 2);
         byte[] d = getSetOfBits(permutatedKey, PC1.length / 2, PC1.length / 2);
         // Then rotate those halves 1 or 2 bits according to the shifts table.
-        //depending on the round
+        // depending on the round
         for (int j = 0; j < 16; j++) {
             c = rotateShift(c, shitfs[j]);
             d = rotateShift(d, shitfs[j]);
@@ -187,7 +193,7 @@ public class DES {
             // use concatenate to make the subkey from two halves
             byte[] subKey = concatenate(c, d, 28);
 
-            //Then permute this newly formed subkey according to PC2 table, and add it to the subkeys list.
+            // Then permute this newly formed subkey according to PC2 table, and add it to the subkeys list.
             subKey = permute(PC2, subKey);
             subKeys[j] = subKey;
         }
@@ -205,7 +211,8 @@ public class DES {
     public byte[] concatenate(byte[] dataA, byte[] dataB, int len) {
         byte[] concatenated = new byte[(len + len - 1) / 8 + 1];
 
-        //use helper methods to get the bits from  A and B and set those bits into the concatenaded array.
+        // use helper methods to get the bits from  A and B and set those bits
+        // into the concatenaded array.
         for (int i = 0; i < len; i++) {
             int aBit = getBit(dataA, i);
             int bBit = getBit(dataB, i);
@@ -227,6 +234,7 @@ public class DES {
         byte[] shifted = new byte[(28 - 1) / 8 + 1];
         for (int i = 0; i < 28; i++) {
             // get the bit from data (c or d half) and set it to the shifted array.
+            // Move the bit 1 or two times left according to the shift.
             int bit = getBit(data, (i + shift) % 28);
             setBit(shifted, i, bit);
         }
@@ -242,10 +250,16 @@ public class DES {
      * @return permuted data.
      */
     private byte[] permute(int[] table, byte[] data) {
+        /* Use the table to set the according bits from the data. 
+         For example if 1st number from the table is 47
+         Get the 47th bit from data and put it to the first in new permuted
+         array.
+         Same for the second number of the table .. all the way.
+         */
         byte[] permuted = new byte[(table.length - 1) / 8 + 1];
         for (int i = 0; i < table.length; i++) {
-            int value = getBit(data, table[i] - 1);
-            setBit(permuted, i, value);
+            int bit = getBit(data, table[i] - 1);
+            setBit(permuted, i, bit);
         }
         return permuted;
     }
@@ -261,8 +275,9 @@ public class DES {
 
         int bytePosition = position / 8;
         int bitPosition = position % 8;
-        byte bit = data[bytePosition];
-        int value = bit >> (8 - (bitPosition + 1)) & 0x0001;
+        byte byt = data[bytePosition];
+        // Get the bit from the bytes position. and extract it to the integer value.
+        int value = byt >> (8 - (bitPosition + 1)) & 0x0001;
         return value;
     }
 
@@ -277,6 +292,10 @@ public class DES {
         int bytePosition = position / 8;
         int bitPosition = position % 8;
         byte bit = data[bytePosition];
+        /* Set the bit (value)  to the wanted position. 
+         Param bit is temperary value to get correct information out from
+         the table.
+         */
         bit = (byte) (((0xFF7F >> bitPosition) & bit) & 0x00F);
         byte newByte = (byte) ((value << (8 - (bitPosition + 1))) | bit);
         data[bytePosition] = newByte;
@@ -296,7 +315,7 @@ public class DES {
      */
     private byte[] feistel(byte[] rightSide, byte[] subKey) {
         byte[] permuted;
-        //First we expand the message, with E-bit selection table, which uses
+        // First we expand the message, with E-bit selection table, which uses
         // multiple same integers we use to expand the message.
         permuted = permute(EbitTable, rightSide);
         // After that we use xor method to generate random  data which is combined
@@ -351,8 +370,10 @@ public class DES {
         int bytes = (n - 1) / 8 + 1;
         byte[] output = new byte[bytes];
         for (int i = 0; i < n; i++) {
-            int j = getBit(data, position + i);
-            setBit(output, i, j);
+            // In order to get multiple bits from the data loop the wanted lenght
+            // and set the output as wanted.
+            int bit = getBit(data, position + i);
+            setBit(output, i, bit);
         }
         return output;
 
@@ -376,18 +397,21 @@ public class DES {
         //split the message in half ( 64bits to 32 bits)
         byte[] left = getSetOfBits(crypted, 0, 32);
         byte[] right = getSetOfBits(crypted, 32, 32);
-        // Do the 16 rounds needed to encrypt Decrypt;
+
+        // Do the 16 rounds needed to encrypt / decrypt;
         for (int i = 0; i < 16; i++) {
+
             byte[] lastRight = right;
             if (encryption) {
                 right = encryptionRound(right, left, i);
             } else {
                 right = decryptionRound(right, left, i);
             }
-
+            //Set the left side of the message previous right
             left = lastRight;
         }
 
+        //Concatenate the message and permute it with final permutation
         crypted = concatenate(right, left, 32);
         crypted = permute(FP, crypted);
         return crypted;
@@ -410,7 +434,10 @@ public class DES {
      * @return new scrambled right side of the message.
      */
     private byte[] encryptionRound(byte[] right, byte[] left, int round) {
+        // Use the feistel method to scramble right side of the message.
         right = feistel(right, this.subKeys[round]);
+        // After that take the bits from left and right and scramble the message
+        // with xor
         right = xor(left, right);
         return right;
     }
@@ -424,6 +451,7 @@ public class DES {
      * @return decrypted set.
      */
     private byte[] decryptionRound(byte[] right, byte[] left, int round) {
+        //In decryption we use the subkeys other way around.
         right = feistel(right, this.subKeys[15 - round]);
         right = xor(left, right);
         return right;
@@ -480,34 +508,38 @@ public class DES {
         byte[] bloc = new byte[8];
         for (i = 0; i < data.length; i++) {
             if (i > 0 && i % 8 == 0) {
+                // When we have 64 bit bloc we decrypt it.
                 bloc = cryptBloc(bloc, false);
+                // Use the ArrayCopy method to copy the bloc to the decrytdet message.
                 ArrayCopy.byteCopy(bloc, 0, decrypted, i - 8, bloc.length);
             }
             if (i < data.length) {
+                //Add the information to the bloc
                 bloc[i % 8] = data[i];
             }
         }
+        //decrypt the last bloc
         bloc = cryptBloc(bloc, false);
         ArrayCopy.byteCopy(bloc, 0, decrypted, i - 8, bloc.length);
 
-        int count = 0;
+        int counter = 0;
 
-        //removes the padding
+        //removes the padding 
         int index = decrypted.length - 1;
         while (decrypted[index] == 0) {
-            count++;
+            counter++;
             index--;
         }
-        byte[] nopadding = new byte[decrypted.length - count - 1];
+        byte[] nopadding = new byte[decrypted.length - counter - 1];
         ArrayCopy.byteCopy(decrypted, 0, nopadding, 0, nopadding.length);
         return nopadding;
 
     }
 
     /**
-     * Encrypts the plaintext and returns byte array of crypted data.
+     * Encrypts the plaintext and return
      *
-     *
+     * @param key byte array of crypted data.
      * @param plaintext String to be crypted.
      * @return byte array of crypted data.
      * @throws Exception
@@ -544,9 +576,10 @@ public class DES {
      * @return encrypted data aka ciphertext.
      */
     private byte[] cryptData(byte[] data) {
-        //Seperate the data for 64 bits of data blocs.
+        // Seperate the data for 64 bits of data blocs.
         int len = 8 - data.length % 8;
 
+        // initialize padding. first byte is (decimal) -128 for easy regognizion.
         byte[] padding = new byte[len];
         padding[0] = (byte) 0x80;
         byte[] crytpedData = new byte[data.length + len];
@@ -556,16 +589,22 @@ public class DES {
         int i;
         for (i = 0; i < data.length + len; i++) {
             if (i > 0 && i % 8 == 0) {
+                // When we have bloc size of 64 bit, its time to encrypt the block. Copy it to
+                // the crypted data array.
                 bloc = cryptBloc(bloc, true);
                 ArrayCopy.byteCopy(bloc, 0, crytpedData, i - 8, bloc.length);
             }
             if (i < data.length) {
+                // add the information.
                 bloc[i % 8] = data[i];
             } else {
+                // Add the padding. 
                 bloc[i % 8] = padding[counter % 8];
                 counter++;
             }
         }
+
+        // Crypt the last bloc
         if (bloc.length == 8) {
             bloc = cryptBloc(bloc, true);
             ArrayCopy.byteCopy(bloc, 0, crytpedData, i - 8, bloc.length);
