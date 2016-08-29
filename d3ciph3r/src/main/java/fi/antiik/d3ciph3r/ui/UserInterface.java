@@ -18,7 +18,7 @@ public class UserInterface {
     private Scanner scanner;
     private Logic logic;
     private String textFromFile = "";
-    private String cipherTextContentt = "";
+    private String cipherTextContent = "";
 
     /**
      * New UserInterface creates logic wich operates commands from the user.
@@ -36,8 +36,7 @@ public class UserInterface {
      */
     public void run() {
         System.out.println("Hello and welcome to D3ciph3r program! \n"
-                + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard [WIP!] \n"
-                + "If you wish to encrypt txt file please load the file first");
+                + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard [WIP!] \n");
 
         printInstructions();
         while (true) {
@@ -70,37 +69,10 @@ public class UserInterface {
     private void execute(int cmd) {
         switch (cmd) {
             case 1:
-                String plainText;
-                if (this.textFromFile.isEmpty()) {
-                    System.out.print("String to be encrypted: ");
-                    plainText = this.scanner.nextLine();
-                } else {
-                    plainText = this.textFromFile;
-                }
-                System.out.print("Shift to be used: ");
-                int shiftEncrypt = -1;
-                while (shiftEncrypt < 0) {
-                    String eShift = this.scanner.nextLine();
-                    shiftEncrypt = this.logic.handleCommand(eShift);
-                    if (shiftEncrypt < 0) {
-                        System.out.println("Please use positive integers only");
-                    }
-                }
-                caesarEncrypt(plainText, shiftEncrypt);
+                caesarEncrypt();
                 break;
             case 2:
-                System.out.print("String to be decrypted: ");
-                String cipherText = this.scanner.nextLine();
-                System.out.print("Shift: ");
-                int shiftDecrypt = -1;
-                while (shiftDecrypt < 0) {
-                    String dShift = this.scanner.nextLine();
-                    shiftDecrypt = this.logic.handleCommand(dShift);
-                    if (shiftDecrypt < 0) {
-                        System.out.println("Please use only positive integers");
-                    }
-                }
-                caesarDecrypt(cipherText, shiftDecrypt);
+                caesarDecrypt();
                 break;
             case 3:
                 DESencrypt();
@@ -112,15 +84,10 @@ public class UserInterface {
                 printInstructions();
                 break;
             case 6:
-                System.out.print("Path to the file: ");
-                String path = this.scanner.nextLine();
-                readFile(path);
+                readFile();
                 break;
             case 7:
-                System.out.println("Path to the file: ");
-                String pathSave = this.scanner.nextLine();
-                saveFile(pathSave);
-                System.exit(0);
+                saveFile();
                 break;
             case 8:
                 System.exit(0);
@@ -131,6 +98,49 @@ public class UserInterface {
 
         }
     }
+/**
+ * Handles the String for caesar cipher.
+ * @return String to be encrypted or decrypted.
+ */
+    private String handleCaesar() {
+        System.out.println("Type 1 if you want to use a string or "
+                + "Type 2 if you want to use a txtfile.");
+        int option = -1;
+        while (option != 1 || option != 2) {
+            String possibleOption = this.scanner.nextLine();
+            option = this.logic.handleCommand(possibleOption);
+            if (option == 1 || option == 2) {
+                break;
+            } else {
+                System.out.println("Please type 1 or 2");
+            }
+        }
+        if (option == 1) {
+            System.out.print("Type the string you wish to use: ");
+            String text = this.scanner.nextLine();
+            return text;
+        } else {
+            readFile();
+            return this.textFromFile;
+        }
+
+    }
+/**
+ * Asks the user what shift is to be used in Caesar cipher.
+ * @return shift used to encrypt or decrypt the String.
+ */
+    private int handleShift() {
+        int shift = -1;
+        while (shift < 0) {
+            System.out.print("Shift to be used: ");
+            String eShift = this.scanner.nextLine();
+            shift = this.logic.handleCommand(eShift);
+            if (shift < 0) {
+                System.out.println("Please use positive integers only");
+            }
+        }
+        return shift;
+    }
 
     /**
      * Encrypts given string using Caesar Cipher.
@@ -138,11 +148,16 @@ public class UserInterface {
      * @param plainText String to be encrypted.
      * @param shift Shift used for encrypting.
      */
-    private void caesarEncrypt(String plainText, int shift) {
+    private void caesarEncrypt() {
+        String plainText = handleCaesar();
+
+        int shift = handleShift();
+
         String cipherText = this.logic.encrytpCaesar(plainText, shift);
-        this.cipherTextContentt = cipherText;
+        this.cipherTextContent = cipherText;
         System.out.println("Your shiftkey(Keep safe): " + shift);
         System.out.println("Your crypted text = " + cipherText);
+        System.out.println("Dont forget to save!");
     }
 
     /**
@@ -151,13 +166,12 @@ public class UserInterface {
      * @param cipherText String to be decrypted.
      * @param shift Shift used for encrypting
      */
-    private void caesarDecrypt(String cipherText, int shift) {
-        String plainText = "";
-//        if (this.cipherTextContentt != null) {
-//            cipherText = this.cipherTextContentt;
-//        }
-        plainText = this.logic.decryptCaesar(cipherText, shift);
+    private void caesarDecrypt() {
+        String cipherText = handleCaesar();
+        int shift = handleShift();
+        String plainText = this.logic.decryptCaesar(cipherText, shift);
         System.out.println("Your text: " + plainText);
+        System.out.println("Dont forget to save!");
     }
 
     private void DESencrypt() {
@@ -173,11 +187,13 @@ public class UserInterface {
      *
      * @param path path to the file.
      */
-    private void readFile(String path) {
+    private void readFile() {
+        System.out.print("Path to the file: ");
+        String path = this.scanner.nextLine();
         try {
             this.textFromFile = this.logic.returnFileAsString(path);
         } catch (Exception e) {
-            System.out.println("BYHYY! :( : " + e);
+            System.out.println("Sorry, no file found:  " + e);
         }
 
     }
@@ -187,11 +203,13 @@ public class UserInterface {
      *
      * @param path Path to the file.
      */
-    private void saveFile(String path) {
+    private void saveFile() {
+        System.out.println("Path to the file: ");
+        String path = this.scanner.nextLine();
         try {
-            this.logic.saveFile(path, this.cipherTextContentt);
+            this.logic.saveFile(path, this.cipherTextContent);
         } catch (Exception e) {
-            System.out.println("Ouch:");
+            System.out.println("Error: " + e);
         }
     }
 }
