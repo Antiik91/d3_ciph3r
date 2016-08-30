@@ -19,40 +19,41 @@ public class Main {
     public static void main(String[] args) {
         try {
 
-//            DES des = new DES();
-//            des.generateKey();
-//            String key = "NeedAKey";
-//           String hello = "abcdefgh";
-//           byte[] h = hello.getBytes();
-//            System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
-//            for (byte i : h) {
-//                System.out.print( i+ ", ");
-//            }
-//            System.out.println("");
-//            String tesTexT = "Testialgoritmi";
-//           
-//           byte[] encrypt = des.encrypt(tesTexT, key);
-//            System.out.println("Moi, tämän pitäisi olla cryptattu: " + new String(encrypt));
-//            System.out.println("+++   ENCRYPTED STRING IN BYTES    +++");
-//            for (byte f : encrypt) {
-//                System.out.print(f + ", ");
-//            }
-//            System.out.println("");
-//            byte[][] hey = des.getSubKeys();
-//            des.setSubKeys(hey);
-//            String lol = new String(encrypt, "UTF-8");
-//            byte[] decryptHello = des.decryptData(encrypt);
-//            System.out.println("Tämän pitäisi olla decryptatty " + new String(decryptHello));
-//            System.out.println("+++   DECRYPTED STRING IN BYTES   +++");
-//            for (byte e : decryptHello) {
-//                System.out.print(e + ", ");
-//            }
-//            System.out.println("");
-//            System.out.println("END OF PROGRAM");
+            DES des = new DES();
+            des.generateKey();
+            String key = "NeedAKey";
+           String hello = "abcdefgh";
+           String tesTexT = "Testialgoritmi";
+           byte[] h = tesTexT.getBytes();
+            System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
+            for (byte i : h) {
+                System.out.print( i+ ", ");
+            }
+            System.out.println("");
+            System.out.println("Original String: " + tesTexT);
+           
+           byte[] encrypt = des.encrypt(tesTexT, key);
+            System.out.println("Moi, tämän pitäisi olla cryptattu: " + new String(encrypt));
+            System.out.println("+++   ENCRYPTED STRING IN BYTES    +++");
+            for (byte f : encrypt) {
+                System.out.print(f + ", ");
+            }
+            System.out.println("");
+            byte[][] hey = des.getSubKeys();
+            des.setSubKeys(hey);
+            String lol = new String(encrypt, "UTF-8");
+            byte[] decryptHello = des.decryptData(encrypt);
+            System.out.println("Tämän pitäisi olla decryptatty " + new String(decryptHello));
+            System.out.println("+++   DECRYPTED STRING IN BYTES   +++");
+            for (byte e : decryptHello) {
+                System.out.print(e + ", ");
+            }
+            System.out.println("");
+            System.out.println("END OF PROGRAM");
 //            
 
-            UserInterface ui = new UserInterface(new Scanner(System.in));
-                        ui.run();
+//            UserInterface ui = new UserInterface(new Scanner(System.in));
+//                        ui.run();
 
 
         } catch (Exception e) {

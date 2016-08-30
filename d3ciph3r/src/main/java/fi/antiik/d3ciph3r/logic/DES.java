@@ -33,7 +33,7 @@ public class DES {
     };
 
     /**
-     * Permute choice 2. Used to pemute halved and shifted from key+ CnDn pairs
+     * Permute choice 2. Used to pemute halved and shifted subkey from key+ CnDn pairs
      * (56 bits) to 48 bit subkey. every 8. bit is discarded.
      */
     private int[] PC2 = {
@@ -180,7 +180,7 @@ public class DES {
     private byte[][] createSubKeys(byte[] key) {
         // First we permute the original, 56 bit to 48 bit "key+", discarding every 8th bit. 
         byte[] permutatedKey = permute(PC1, key);
-        byte[][] subKeys = new byte[16][];
+        byte[][] subKeySet = new byte[16][];
         // use helper method to divide the key+ into two halves, c and d
         byte[] c = getSetOfBits(permutatedKey, 0, PC1.length / 2);
         byte[] d = getSetOfBits(permutatedKey, PC1.length / 2, PC1.length / 2);
@@ -195,9 +195,9 @@ public class DES {
 
             // Then permute this newly formed subkey according to PC2 table, and add it to the subkeys list.
             subKey = permute(PC2, subKey);
-            subKeys[j] = subKey;
+            subKeySet[j] = subKey;
         }
-        return subKeys;
+        return subKeySet;
     }
 
     /**
@@ -387,7 +387,7 @@ public class DES {
      * @return crypted bloc
      */
     private byte[] cryptBloc(byte[] data, boolean encryption) {
-        // We need the subkeys in order to crypitng to work
+        // We need the subkeys in order to get crypitng to work
         if (this.subKeys == null) {
             this.subKeys = createSubKeys(this.key);
         }
@@ -510,7 +510,7 @@ public class DES {
             if (i > 0 && i % 8 == 0) {
                 // When we have 64 bit bloc we decrypt it.
                 bloc = cryptBloc(bloc, false);
-                // Use the ArrayCopy method to copy the bloc to the decrytdet message.
+                // Use the ArrayCopy method to copy the bloc to the decrytpted message.
                 ArrayCopy.byteCopy(bloc, 0, decrypted, i - 8, bloc.length);
             }
             if (i < data.length) {
