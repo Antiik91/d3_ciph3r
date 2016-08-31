@@ -23,7 +23,7 @@ public class Main {
             des.generateKey();
             String key = "NeedAKey";
            String hello = "abcdefgh";
-           String tesTexT = "Testialgoritmi";
+           String tesTexT = "ykknvksk";
            byte[] h = tesTexT.getBytes();
             System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
             for (byte i : h) {

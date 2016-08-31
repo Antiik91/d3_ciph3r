@@ -297,7 +297,9 @@ public class DES {
          the table.
          */
         bit = (byte) (((0xFF7F >> bitPosition) & bit) & 0x00F);
+        System.out.println("BYTE: " + bit);
         byte newByte = (byte) ((value << (8 - (bitPosition + 1))) | bit);
+        System.out.println("TUUSIBYTE: "+ newByte);
         data[bytePosition] = newByte;
     }
 
@@ -403,9 +405,9 @@ public class DES {
 
             byte[] lastRight = right;
             if (encryption) {
-                right = encryptionRound(right, left, i);
-            } else {
-                right = decryptionRound(right, left, i);
+//                right = encryptionRound(right, left, i);
+//            } else {
+//                right = decryptionRound(right, left, i);
             }
             //Set the left side of the message previous right
             left = lastRight;
