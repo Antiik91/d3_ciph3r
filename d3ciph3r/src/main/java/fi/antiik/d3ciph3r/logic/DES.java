@@ -33,8 +33,8 @@ public class DES {
     };
 
     /**
-     * Permute choice 2. Used to pemute halved and shifted subkey from key+ CnDn pairs
-     * (56 bits) to 48 bit subkey. every 8. bit is discarded.
+     * Permute choice 2. Used to pemute halved and shifted subkey from key+ CnDn
+     * pairs (56 bits) to 48 bit subkey. every 8. bit is discarded.
      */
     private int[] PC2 = {
         14, 17, 11, 24, 1, 5,
@@ -180,10 +180,23 @@ public class DES {
     private byte[][] createSubKeys(byte[] key) {
         // First we permute the original, 56 bit to 48 bit "key+", discarding every 8th bit. 
         byte[] permutatedKey = permute(PC1, key);
+        System.out.println("AVAIN: ");
+        for (byte b : permutatedKey) {
+            System.out.print(b + " ");
+        }
+        System.out.println("");
+        System.out.println("----------------------------------------");
+        permutatedKey[3] = 2;
         byte[][] subKeySet = new byte[16][];
         // use helper method to divide the key+ into two halves, c and d
         byte[] c = getSetOfBits(permutatedKey, 0, PC1.length / 2);
         byte[] d = getSetOfBits(permutatedKey, PC1.length / 2, PC1.length / 2);
+        for (byte b : d) {
+//            System.out.println("DTAULUKKO ELI B: " + b);
+        }
+        for (byte b : c) {
+//            System.out.println("CTAULUKKO ELI A: " + b);
+        }
         // Then rotate those halves 1 or 2 bits according to the shifts table.
         // depending on the round
         for (int j = 0; j < 16; j++) {
@@ -210,14 +223,21 @@ public class DES {
      */
     public byte[] concatenate(byte[] dataA, byte[] dataB, int len) {
         byte[] concatenated = new byte[(len + len - 1) / 8 + 1];
+        for (byte b : dataA) {
+//            System.out.println("ATAULUKKO: " + b);
+
+        }
+        for (byte b : dataB) {
+//            System.out.println("BTAULUKKO: " + b);
+        }
 
         // use helper methods to get the bits from  A and B and set those bits
         // into the concatenaded array.
         for (int i = 0; i < len; i++) {
             int aBit = getBit(dataA, i);
             int bBit = getBit(dataB, i);
-            setBit(concatenated, i, aBit);
-            setBit(concatenated, len + i, bBit);
+            setBit(concatenated, i, aBit, "Concatenate");
+            setBit(concatenated, len + i, bBit, "Concatenate");
         }
 
         return concatenated;
@@ -236,7 +256,7 @@ public class DES {
             // get the bit from data (c or d half) and set it to the shifted array.
             // Move the bit 1 or two times left according to the shift.
             int bit = getBit(data, (i + shift) % 28);
-            setBit(shifted, i, bit);
+            setBit(shifted, i, bit, "RotateShift");
         }
         return shifted;
     }
@@ -259,7 +279,7 @@ public class DES {
         byte[] permuted = new byte[(table.length - 1) / 8 + 1];
         for (int i = 0; i < table.length; i++) {
             int bit = getBit(data, table[i] - 1);
-            setBit(permuted, i, bit);
+            setBit(permuted, i, bit, "permute");
         }
         return permuted;
     }
@@ -278,6 +298,7 @@ public class DES {
         byte byt = data[bytePosition];
         // Get the bit from the bytes position. and extract it to the integer value.
         int value = byt >> (8 - (bitPosition + 1)) & 0x0001;
+
         return value;
     }
 
@@ -288,7 +309,7 @@ public class DES {
      * @param position position where the bit needs to be placed.
      * @param value bit as int.
      */
-    private void setBit(byte[] data, int position, int value) {
+    public void setBit(byte[] data, int position, int value, String where) {
         int bytePosition = position / 8;
         int bitPosition = position % 8;
         byte bit = data[bytePosition];
@@ -296,10 +317,10 @@ public class DES {
          Param bit is temperary value to get correct information out from
          the table.
          */
-        bit = (byte) (((0xFF7F >> bitPosition) & bit) & 0x00F);
-        System.out.println("BYTE: " + bit);
+        bit = (byte) (((0xFF7F >> bitPosition) & bit) & 0x00FF);
+//        System.out.println("BYTE: " + bit+ " From: " + where);
         byte newByte = (byte) ((value << (8 - (bitPosition + 1))) | bit);
-        System.out.println("TUUSIBYTE: "+ newByte);
+//        System.out.println("TUUSIBYTE: "+ newByte);
         data[bytePosition] = newByte;
     }
 
@@ -339,7 +360,7 @@ public class DES {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < 6; j++) {
                 int bit = getBit(data, 6 * i + j);
-                setBit(dataSeperated, 8 * i + j, bit);
+                setBit(dataSeperated, 8 * i + j, bit, "Substitution");
             }
         }
         byte[] substituted = new byte[dataSeperated.length / 2];
@@ -375,7 +396,7 @@ public class DES {
             // In order to get multiple bits from the data loop the wanted lenght
             // and set the output as wanted.
             int bit = getBit(data, position + i);
-            setBit(output, i, bit);
+            setBit(output, i, bit, "SetofBits");
         }
         return output;
 
@@ -405,9 +426,9 @@ public class DES {
 
             byte[] lastRight = right;
             if (encryption) {
-//                right = encryptionRound(right, left, i);
-//            } else {
-//                right = decryptionRound(right, left, i);
+                right = encryptionRound(right, left, i);
+            } else {
+                right = decryptionRound(right, left, i);
             }
             //Set the left side of the message previous right
             left = lastRight;

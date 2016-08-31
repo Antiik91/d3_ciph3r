@@ -22,8 +22,9 @@ public class Main {
             DES des = new DES();
             des.generateKey();
             String key = "NeedAKey";
+
            String hello = "abcdefgh";
-           String tesTexT = "ykknvksk";
+           String tesTexT = "Testataan tätä oikeasti kunnolla, toimiiko tämä hyvin? Olisi hyvä jos toimisi";
            byte[] h = tesTexT.getBytes();
             System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
             for (byte i : h) {
@@ -50,6 +51,22 @@ public class Main {
             }
             System.out.println("");
             System.out.println("END OF PROGRAM");
+            
+            byte[] testi = new byte[5];
+            int d = 5;
+            int j = 3;
+            for (int i = 0; i < 40; i++) {
+                if(i % j == 0) {
+              des.setBit(testi, i, 1, hello);  
+                }else {
+                    des.setBit(testi, i, 0, hello);
+                }
+            }
+            
+            System.out.println("TESTITAVUT");
+            for (byte b : testi) {
+                System.out.print(b + " ");
+            }
 //            
 
 //            UserInterface ui = new UserInterface(new Scanner(System.in));
