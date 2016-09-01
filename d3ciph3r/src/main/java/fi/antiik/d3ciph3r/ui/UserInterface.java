@@ -19,6 +19,7 @@ public class UserInterface {
     private Logic logic;
     private String textFromFile = "";
     private String cipherTextContent = "";
+    private String decryptedText = "";
 
     /**
      * New UserInterface creates logic wich operates commands from the user.
@@ -100,7 +101,7 @@ public class UserInterface {
     }
 
     /**
-     * Handles the String for caesar cipher.
+     * Handles the String for crypting.
      *
      * @return String to be encrypted or decrypted.
      */
@@ -174,10 +175,17 @@ public class UserInterface {
         String cipherText = stringOrFile();
         int shift = handleShift();
         String plainText = this.logic.decryptCaesar(cipherText, shift);
+        this.decryptedText = plainText;
         System.out.println("Your text: " + plainText);
         System.out.println("Dont forget to save!");
+
     }
 
+    /**
+     * Method makes sure that the key we want to use is valid for DES.
+     *
+     * @return valid key
+     */
     private String handleKey() {
         String key = "";
         boolean valid = false;
@@ -193,6 +201,11 @@ public class UserInterface {
         return key;
     }
 
+    /**
+     * Encrypts the data with DES.
+     *
+     * @throws Exception
+     */
     private void DESencrypt() throws Exception {
         String plainText = stringOrFile();
         String key = handleKey();
@@ -203,49 +216,30 @@ public class UserInterface {
             System.out.print(f + " ");
             this.cipherTextContent += f + " ";
         }
+        System.out.println("");
     }
 
+    /**
+     * Decrypts the data with DES.
+     *
+     * @throws Exception
+     */
     private void DESDecrypt() throws Exception {
         System.out.println("NOTE: Please consider using Files instead of strings as DES decrypting uses byte arrays.");
         byte[] cipher = handleDESDecrypt();
         String key = handleKey();
         byte[] plainText = this.logic.decryptDES(cipher, key);
-
-        System.out.println("your decrypted text: " + new String(plainText));
-
-    }
-
-    /**
-     * Reads the file from given path.
-     *
-     * @param path path to the file.
-     */
-    private void readFile() {
-        System.out.print("Path to the file: ");
-        String path = this.scanner.nextLine();
-        try {
-            this.textFromFile = this.logic.returnFileAsString(path);
-        } catch (Exception e) {
-            System.out.println("Sorry, no file found:  " + e);
-        }
+        this.decryptedText = new String(plainText);
+        System.out.println("your decrypted text: " + decryptedText);
 
     }
 
     /**
-     * Saves the file to given path.
+     * Because we use byte array with message crypted with DES we need different
+     * method to hanle the bytes.
      *
-     * @param path Path to the file.
+     * @return byte array of ciphertext.
      */
-    private void saveFile() {
-        System.out.println("Path to the file: ");
-        String path = this.scanner.nextLine();
-        try {
-            this.logic.saveFile(path, this.cipherTextContent);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
-    }
-
     private byte[] handleDESDecrypt() {
         byte[] crypted = null;
         System.out.print("Type 1 for a string and 2 for a file: ");
@@ -270,4 +264,44 @@ public class UserInterface {
 
         return crypted;
     }
+
+    /**
+     * Reads the file from given path.
+     *
+     * @param path path to the file.
+     */
+    private void readFile() {
+        System.out.print("Path to the file: ");
+        String path = this.scanner.nextLine();
+        try {
+            this.textFromFile = this.logic.returnFileAsString(path);
+        } catch (Exception e) {
+            System.out.println("Sorry, no file found:  " + e);
+        }
+
+    }
+
+    /**
+     * Saves the file to given path.
+     *
+     * @param path Path to the file.
+     */
+    private void saveFile() {
+        System.out.println("Encrypted or ciphered text file. Leave empty if you dont wish to save.");
+        System.out.println("Path to the file: ");
+        String pathEncrypted = this.scanner.nextLine();
+        System.out.println("Decrypted or plain text file. Leave empyt if you don't wish to save it.");
+        String pathDecrypted = this.scanner.nextLine();
+        try {
+            if(!pathEncrypted.isEmpty()) {
+            this.logic.saveFile(pathEncrypted, this.cipherTextContent);
+            }
+            if(!pathDecrypted.isEmpty()) {
+                this.logic.saveFile(pathDecrypted, this.decryptedText);
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+    }
+
 }

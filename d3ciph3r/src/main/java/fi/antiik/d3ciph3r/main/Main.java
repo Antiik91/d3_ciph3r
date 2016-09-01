@@ -18,13 +18,13 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-//
+
 //            DES des = new DES();
 //            des.generateKey();
 //            String key = "NeedAKey";
 //
 //           String hello = "abcdefgh";
-//           String tesTexT = "Entä, jos muutan tätä?";
+//           String tesTexT = "Entä, jos muutan tätä? Entä jos teen tästä oikein pitkän? Tarinan kalevalsta? Tai vastaavasta? Tapahtuuko mitään outoa? ";
 //           byte[] h = tesTexT.getBytes();
 //            System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
 //            for (byte i : h) {
@@ -40,9 +40,7 @@ public class Main {
 //                System.out.print(f + ", ");
 //            }
 //            System.out.println("");
-//            byte[][] hey = des.getSubKeys();
-//            des.setSubKeys(hey);
-//            byte[] decryptHello = des.decryptData(encrypt);
+//            byte[] decryptHello = des.decryptData(encrypt, key);
 //            System.out.println("Decrypted: " + new String(decryptHello));
 //            System.out.println("+++   DECRYPTED STRING IN BYTES   +++");
 //            for (byte e : decryptHello) {
@@ -50,7 +48,7 @@ public class Main {
 //            }
 //            System.out.println("");
 //            System.out.println("END OF PROGRAM");
-//            
+            
 //            byte[] testi = new byte[5];
 //            int d = 5;
 //            int j = 3;
@@ -66,6 +64,7 @@ public class Main {
 //            for (byte b : testi) {
 //                System.out.print(b + " ");
 //            }
+//            
 //            
 
             UserInterface ui = new UserInterface(new Scanner(System.in));

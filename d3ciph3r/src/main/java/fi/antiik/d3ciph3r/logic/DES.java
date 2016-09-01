@@ -177,9 +177,7 @@ public class DES {
         return subKeys;
     }
 
-    public void setSubKeys(byte[][] subKeys) {
-        this.subKeys = subKeys;
-    }
+
 
     /**
      * Generates the new 64 bit random key.
@@ -202,13 +200,14 @@ public class DES {
      * Decrypts the data from byte array.
      *
      * @param data encrypted data array.
-     * @return plaintext string.
+     * @return plaintext byte array
      * @throws Exception
      */
     public byte[] decryptData(byte[] data, String key) throws Exception {
         this.key = key.getBytes();
         int i;
         byte[] decrypted = new byte[data.length];
+        // bloc is 64 bit long message == 8 bytes
         byte[] bloc = new byte[8];
         for (i = 0; i < data.length; i++) {
             if (i > 0 && i % 8 == 0) {
@@ -228,11 +227,13 @@ public class DES {
 
         int counter = 0;
 
-        //removes the padding 
-        int index = decrypted.length - 1;
-        while (decrypted[index] == 0) {
-            counter++;
-            index--;
+        //removes the padding. Padding is at end of the array, so we search as long as we have 0 bytes in 
+        for (int j = decrypted.length - 1; j >= 0; j--) {
+            if(decrypted[j] != 0) {
+                break;
+            }else {
+                counter++;
+            }
         }
         byte[] nopadding = new byte[decrypted.length - counter - 1];
         ArrayCopy.byteCopy(decrypted, 0, nopadding, 0, nopadding.length);
@@ -266,7 +267,7 @@ public class DES {
     }
 
     /**
-     * Crypts the data got from encryptPlaintext method.
+     * Crypts the data from encryptPlaintext method.
      *
      * @param data data to be encryted.
      * @return encrypted data aka ciphertext.
@@ -275,7 +276,7 @@ public class DES {
         // Seperate the data for 64 bits of data blocs.
         int len = 8 - data.length % 8;
 
-        // initialize padding. first byte is (decimal) -128 for easy regognizion.
+        // initialize padding. first byte is (decimal) -128 for easy regognition.
         byte[] padding = new byte[len];
         padding[0] = (byte) 0x80;
         byte[] crytpedData = new byte[data.length + len];
@@ -366,8 +367,6 @@ public class DES {
          */
         byte[] permuted = new byte[(table.length - 1) / 8 + 1];
         for (int i = 0; i < table.length; i++) {
-//            int bit = getBit(data, table[i] - 1);
-//            setBit(permuted, i, bit);
             int bit = BitTools.getBit(data, table[i] - 1);
             BitTools.setBit(permuted, i, bit);
         }
@@ -396,7 +395,6 @@ public class DES {
         permuted = xor(permuted, subKey);
         // Use the substitution table to substitute and further scramble the data.
         // TBA
-
         // last we permute trhough P table the data and return it
         permuted = permute(P, permuted);
         return permuted;
@@ -408,7 +406,12 @@ public class DES {
 
         return substituted;
     }
-
+/**
+ * XOR the data between arrays.
+ * @param a array a.
+ * @param b array b.
+ * @return new data array which has been xorred
+ */
     private byte[] xor(byte[] a, byte[] b) {
         byte[] xorred = new byte[a.length];
         for (int i = 0; i < a.length; i++) {
@@ -483,7 +486,7 @@ public class DES {
             // use concatenate to make the subkey from two halves
             byte[] subKey = BitTools.concatenate(c, d, 28);
 
-            // Then permute this newly formed subkey according to PC2 table, and add it to the subkeys list.
+            // Then permute this newly formed subkey with  PC2 table, and add it to the subkeys list.
             subKey = permute(PC2, subKey);
             subKeySet[j] = subKey;
         }

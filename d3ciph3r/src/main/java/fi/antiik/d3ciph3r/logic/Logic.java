@@ -84,15 +84,35 @@ public class Logic {
         }
     }
 
+    /**
+     * Check if the key is valid.
+     *
+     * @param key
+     * @return true if the key is else false.
+     */
     public boolean validKey(String key) {
         return key.length() == 8;
     }
 
+    /**
+     * Use DES to encrypt plaintext string.
+     *
+     * @param plainText
+     * @param key
+     * @return ciphered text in byte array.
+     * @throws Exception
+     */
     public byte[] encryptDES(String plainText, String key) throws Exception {
         byte[] encrypted = this.des.encryptPlaintext(plainText, key);
         return encrypted;
     }
 
+    /**
+     * This Method parses the bytes from a string
+     *
+     * @param byteArray
+     * @return
+     */
     public byte[] getByteArrayFromString(String byteArray) {
         String[] bytesAsString = byteArray.split(" ");
         byte[] bytes = new byte[bytesAsString.length];
@@ -104,8 +124,16 @@ public class Logic {
         return bytes;
     }
 
-    public byte[] decryptDES(byte[] cipher, String key)throws Exception{
-       byte[] plainBytes = this.des.decryptData(cipher, key);
-       return plainBytes;
+    /**
+     * Use DES to decrypt cipher text in byte array.
+     *
+     * @param cipher
+     * @param key
+     * @return plain text in bytes.
+     * @throws Exception
+     */
+    public byte[] decryptDES(byte[] cipher, String key) throws Exception {
+        byte[] plainBytes = this.des.decryptData(cipher, key);
+        return plainBytes;
     }
 }

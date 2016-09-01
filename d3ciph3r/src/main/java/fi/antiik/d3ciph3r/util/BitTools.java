@@ -6,6 +6,8 @@
 package fi.antiik.d3ciph3r.util;
 
 /**
+ * Helper methods to extract bits from byte array and cocatenate the byte
+ * arrays.
  *
  * @author User
  */
@@ -69,8 +71,8 @@ public class BitTools {
         return output;
 
     }
-    
-        /**
+
+    /**
      * Concatenates the halved data into one.
      *
      * @param dataA left half of the data
