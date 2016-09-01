@@ -18,7 +18,9 @@ import static org.junit.Assert.*;
  * @author janantik
  */
 public class LogicTest {
+    
     private Logic logic;
+    
     public LogicTest() {
     }
     
@@ -32,16 +34,19 @@ public class LogicTest {
     
     @Before
     public void setUp() {
-        this.logic = new Logic();
+        try {
+            this.logic = new Logic();
+        } catch (Exception e) {
+            
+        }
     }
     
     @After
     public void tearDown() {
     }
     
-    
     @Test
-    public void handleCommandReturnstrue(){
+    public void handleCommandReturnstrue() {
         assertEquals(3, this.logic.handleCommand("3"));
     }
     
@@ -51,12 +56,29 @@ public class LogicTest {
     }
     
     @Test
-    public void negativeIntegerHandleCommand(){
+    public void negativeIntegerHandleCommand() {
         assertEquals(-43, this.logic.handleCommand("-43"));
     }
     
     @Test
-    public void incorrectCommandReturnsMinus1(){
+    public void incorrectCommandReturnsMinus1() {
         assertEquals(-1, this.logic.handleCommand("Kissa meni yli laidan"));
+    }
+    
+    @Test
+    public void keyShorterThan8Chars() {
+        String shortKey = "Hello";
+        assertFalse(this.logic.validKey(shortKey));
+    }
+    
+    @Test
+    public void keyLongerThan8Chars() {
+        String longKey = "HelloWorldWhatsUP?";
+        assertFalse(this.logic.validKey(longKey));
+    }
+    
+    @Test
+    public void correctKey(){
+        assertTrue(this.logic.validKey("12345678"));
     }
 }

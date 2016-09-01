@@ -8,6 +8,7 @@ package fi.antiik.d3ciph3r.main;
 import fi.antiik.d3ciph3r.logic.DES;
 import fi.antiik.d3ciph3r.logic.*;
 import fi.antiik.d3ciph3r.ui.*;
+import fi.antiik.d3ciph3r.util.BitTools;
 import java.util.Scanner;
 
 /**
@@ -49,26 +50,23 @@ public class Main {
 //            System.out.println("");
 //            System.out.println("END OF PROGRAM");
             
-//            byte[] testi = new byte[5];
-//            int d = 5;
-//            int j = 3;
-//            for (int i = 0; i < 40; i++) {
-//                if(i % j == 0) {
-//              des.setBit(testi, i, 1);  
-//                }else {
-//                    des.setBit(testi, i, 0);
-//                }
-//            }
-//            
-//            System.out.println("TESTITAVUT");
-//            for (byte b : testi) {
-//                System.out.print(b + " ");
-//            }
-//            
-//            
+            byte[] testi = new byte[5];
+            int d = 5;
+            int j = 3;
+            for (int i = 0; i < 10; i++) {
+  
+                BitTools.setBit(testi, i, 1);
+            }
+            
+            System.out.println("TESTITAVUT");
+            for (byte b : testi) {
+                System.out.print(b + " ");
+            }
+            
+            
 
-            UserInterface ui = new UserInterface(new Scanner(System.in));
-                        ui.run();
+//            UserInterface ui = new UserInterface(new Scanner(System.in));
+//                        ui.run();
 
 
         } catch (Exception e) {

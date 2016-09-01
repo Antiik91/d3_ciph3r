@@ -57,16 +57,16 @@ public class DESTest {
         }
     }
 
-//    @Test
-//    public void decrypingKeyCantBeEmpty() {
-//        String empty = "";
-//        try {
-//            this.des.decyrpt("ThishasnoMeaning", empty);
-//            assertFalse(this.des.getKey().isEmpty());
-//        }catch(Exception e) {
-//            
-//        }
-//    }
+    @Test
+    public void decrypingKeyCantBeEmpty() {
+        String empty = "";
+        try {
+            this.des.decryptData(null, empty);
+            assertFalse(this.des.getKey().isEmpty());
+        }catch(Exception e) {
+            
+        }
+    }
     @Test
     public void encryptNullPlainReturnsNull() {
         try{
@@ -77,15 +77,17 @@ public class DESTest {
         }
     }
     
-//    @Test
-//    public void decryptNullCipherReturnsNull() {
-//        try {
-//            byte[] shouldBeNull = this.des.decyrpt(null, null);
-//            assertTrue(shouldBeNull == null);
-//        }catch(Exception e) {
-//            
-//        }
-//    }
+    @Test
+    public void decryptNullCipherReturnsNull() {
+        try {
+            byte[] lollero = null;
+            String key = null;
+            byte[] shouldBeNull = this.des.decryptData(lollero, key);
+            assertTrue(shouldBeNull == null);
+        }catch(Exception e) {
+            
+        }
+    }
     @Test(expected = AssertionError.class) 
     public void nullKeyThrowsExceptionInEncryption() {
         try{
@@ -94,14 +96,14 @@ public class DESTest {
             assertEquals(NullPointerException.class, e);
         }
     }
-//    @Test(expected = AssertionError.class)
-//    public void nullKeyTrhowsExceptionDecryption(){
-//        try{
-//            this.des.decyrpt("NoMeaning", null);
-//        }catch(Exception e) {
-//            assertEquals(NullPointerException.class, e);
-//        }
-//    }
+    @Test(expected = AssertionError.class)
+    public void nullKeyTrhowsExceptionDecryption(){
+        try{
+            this.des.decryptData(null, null);
+        }catch(Exception e) {
+            assertEquals(NullPointerException.class, e);
+        }
+    }
     @Test
     public void keyGenRightLenght(){
         this.des.generateKey();
