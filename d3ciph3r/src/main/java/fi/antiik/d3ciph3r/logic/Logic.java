@@ -15,12 +15,14 @@ import fi.antiik.d3ciph3r.filehandler.*;
 public class Logic {
 
     private CaesarCipher cs;
+    private DES des;
 
     /**
      * Creates objects used for cyrpting.
      */
-    public Logic() {
+    public Logic() throws Exception {
         this.cs = new CaesarCipher();
+        this.des = new DES();
     }
 
     /**
@@ -69,15 +71,41 @@ public class Logic {
 
     /**
      * Checks that scanner can parse integer from input.
-     *@param command Command in String.
+     *
+     * @param command Command in String.
      * @return -1 if exception, positive input else.
      */
     public int handleCommand(String command) {
         try {
-           int result = Integer.parseInt(command);
+            int result = Integer.parseInt(command);
             return result;
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    public boolean validKey(String key) {
+        return key.length() == 8;
+    }
+
+    public byte[] encryptDES(String plainText, String key) throws Exception {
+        byte[] encrypted = this.des.encryptPlaintext(plainText, key);
+        return encrypted;
+    }
+
+    public byte[] getByteArrayFromString(String byteArray) {
+        String[] bytesAsString = byteArray.split(" ");
+        byte[] bytes = new byte[bytesAsString.length];
+        for (int i = 0; i < bytesAsString.length; i++) {
+            byte b = (byte) Integer.parseInt(bytesAsString[i]);
+            bytes[i] = b;
+        }
+
+        return bytes;
+    }
+
+    public byte[] decryptDES(byte[] cipher, String key)throws Exception{
+       byte[] plainBytes = this.des.decryptData(cipher, key);
+       return plainBytes;
     }
 }

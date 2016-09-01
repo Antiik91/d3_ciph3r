@@ -25,7 +25,7 @@ public class UserInterface {
      *
      * @param scanner comes from Main
      */
-    public UserInterface(Scanner scanner) {
+    public UserInterface(Scanner scanner) throws Exception {
         this.scanner = scanner;
         this.logic = new Logic();
     }
@@ -34,9 +34,9 @@ public class UserInterface {
      * Run is called from Main. it's the centre of program and is active while
      * program is running.
      */
-    public void run() {
+    public void run() throws Exception {
         System.out.println("Hello and welcome to D3ciph3r program! \n"
-                + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard [WIP!] \n");
+                + "In here you can Encrypt and decrypt your messages using Caesar Cipher or Data Encryption Standard \n");
 
         printInstructions();
         while (true) {
@@ -66,7 +66,7 @@ public class UserInterface {
      *
      * @param cmd command to be executed.
      */
-    private void execute(int cmd) {
+    private void execute(int cmd) throws Exception {
         switch (cmd) {
             case 1:
                 caesarEncrypt();
@@ -98,11 +98,13 @@ public class UserInterface {
 
         }
     }
-/**
- * Handles the String for caesar cipher.
- * @return String to be encrypted or decrypted.
- */
-    private String handleCaesar() {
+
+    /**
+     * Handles the String for caesar cipher.
+     *
+     * @return String to be encrypted or decrypted.
+     */
+    private String stringOrFile() {
         System.out.println("Type 1 if you want to use a string or "
                 + "Type 2 if you want to use a txtfile.");
         int option = -1;
@@ -125,10 +127,12 @@ public class UserInterface {
         }
 
     }
-/**
- * Asks the user what shift is to be used in Caesar cipher.
- * @return shift used to encrypt or decrypt the String.
- */
+
+    /**
+     * Asks the user what shift is to be used in Caesar cipher.
+     *
+     * @return shift used to encrypt or decrypt the String.
+     */
     private int handleShift() {
         int shift = -1;
         while (shift < 0) {
@@ -149,7 +153,7 @@ public class UserInterface {
      * @param shift Shift used for encrypting.
      */
     private void caesarEncrypt() {
-        String plainText = handleCaesar();
+        String plainText = stringOrFile();
 
         int shift = handleShift();
 
@@ -167,19 +171,48 @@ public class UserInterface {
      * @param shift Shift used for encrypting
      */
     private void caesarDecrypt() {
-        String cipherText = handleCaesar();
+        String cipherText = stringOrFile();
         int shift = handleShift();
         String plainText = this.logic.decryptCaesar(cipherText, shift);
         System.out.println("Your text: " + plainText);
         System.out.println("Dont forget to save!");
     }
 
-    private void DESencrypt() {
-        System.out.println("Sorry, not yet available");
+    private String handleKey() {
+        String key = "";
+        boolean valid = false;
+        System.out.println("Please note that key must be exactly 8 characters long. For example: NeedAKey");
+        while (!valid) {
+            System.out.print("Key: ");
+            key = this.scanner.nextLine();
+            valid = this.logic.validKey(key);
+            if (!valid) {
+                System.out.println("Please note that key must be exactly 8 characters long. For example: NeedAKey");
+            }
+        }
+        return key;
     }
 
-    private void DESDecrypt() {
-        System.out.println("Sorry, not yet available");
+    private void DESencrypt() throws Exception {
+        String plainText = stringOrFile();
+        String key = handleKey();
+        byte[] encrypted = this.logic.encryptDES(plainText, key);
+        System.out.println("Your encrypted data in bytes. don't forget to save!");
+        this.cipherTextContent = "";
+        for (byte f : encrypted) {
+            System.out.print(f + " ");
+            this.cipherTextContent += f + " ";
+        }
+    }
+
+    private void DESDecrypt() throws Exception {
+        System.out.println("NOTE: Please consider using Files instead of strings as DES decrypting uses byte arrays.");
+        byte[] cipher = handleDESDecrypt();
+        String key = handleKey();
+        byte[] plainText = this.logic.decryptDES(cipher, key);
+
+        System.out.println("your decrypted text: " + new String(plainText));
+
     }
 
     /**
@@ -211,5 +244,30 @@ public class UserInterface {
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
+    }
+
+    private byte[] handleDESDecrypt() {
+        byte[] crypted = null;
+        System.out.print("Type 1 for a string and 2 for a file: ");
+        int option = -1;
+        while (option != 1 || option != 2) {
+            String possibleOption = this.scanner.nextLine();
+            option = this.logic.handleCommand(possibleOption);
+            if (option == 1 || option == 2) {
+                break;
+            } else {
+                System.out.println("Please type 1 or 2");
+            }
+        }
+        if (option == 1) {
+            System.out.println("Type the bytes. Use following method: 12 14 15 124 12");
+            String byteArray = this.scanner.nextLine();
+            crypted = this.logic.getByteArrayFromString(byteArray);
+        } else {
+            readFile();
+            crypted = this.logic.getByteArrayFromString(this.textFromFile);
+        }
+
+        return crypted;
     }
 }

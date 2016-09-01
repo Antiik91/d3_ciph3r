@@ -50,58 +50,58 @@ public class DESTest {
     public void encryptingKeyCantBeEmpty() {
         String empty = "";
         try {
-            this.des.encrypt("ThisHasNoMeaning", empty);
+            this.des.encryptPlaintext("ThisHasNoMeaning", empty);
             assertFalse(this.des.getKey().isEmpty());
         } catch (Exception e) {
 
         }
     }
 
-    @Test
-    public void decrypingKeyCantBeEmpty() {
-        String empty = "";
-        try {
-            this.des.decyrpt("ThishasnoMeaning", empty);
-            assertFalse(this.des.getKey().isEmpty());
-        }catch(Exception e) {
-            
-        }
-    }
+//    @Test
+//    public void decrypingKeyCantBeEmpty() {
+//        String empty = "";
+//        try {
+//            this.des.decyrpt("ThishasnoMeaning", empty);
+//            assertFalse(this.des.getKey().isEmpty());
+//        }catch(Exception e) {
+//            
+//        }
+//    }
     @Test
     public void encryptNullPlainReturnsNull() {
         try{
-        byte[] shouldBeNull = this.des.encrypt(null, null);
+        byte[] shouldBeNull = this.des.encryptPlaintext(null, null);
             assertTrue(shouldBeNull == null);
         } catch(Exception e) {
             
         }
     }
     
-    @Test
-    public void decryptNullCipherReturnsNull() {
-        try {
-            byte[] shouldBeNull = this.des.decyrpt(null, null);
-            assertTrue(shouldBeNull == null);
-        }catch(Exception e) {
-            
-        }
-    }
+//    @Test
+//    public void decryptNullCipherReturnsNull() {
+//        try {
+//            byte[] shouldBeNull = this.des.decyrpt(null, null);
+//            assertTrue(shouldBeNull == null);
+//        }catch(Exception e) {
+//            
+//        }
+//    }
     @Test(expected = AssertionError.class) 
     public void nullKeyThrowsExceptionInEncryption() {
         try{
-            this.des.encrypt("Welp", null);
+            this.des.encryptPlaintext("Welp", null);
         }catch(Exception e) {
             assertEquals(NullPointerException.class, e);
         }
     }
-    @Test(expected = AssertionError.class)
-    public void nullKeyTrhowsExceptionDecryption(){
-        try{
-            this.des.decyrpt("NoMeaning", null);
-        }catch(Exception e) {
-            assertEquals(NullPointerException.class, e);
-        }
-    }
+//    @Test(expected = AssertionError.class)
+//    public void nullKeyTrhowsExceptionDecryption(){
+//        try{
+//            this.des.decyrpt("NoMeaning", null);
+//        }catch(Exception e) {
+//            assertEquals(NullPointerException.class, e);
+//        }
+//    }
     @Test
     public void keyGenRightLenght(){
         this.des.generateKey();

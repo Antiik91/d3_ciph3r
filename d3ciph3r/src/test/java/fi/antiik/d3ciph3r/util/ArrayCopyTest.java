@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fi.antiik.d3ciph3r.logic;
+package fi.antiik.d3ciph3r.util;
 
+import fi.antiik.d3ciph3r.util.ArrayCopy;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
