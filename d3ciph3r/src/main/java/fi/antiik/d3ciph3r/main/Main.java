@@ -15,51 +15,40 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            Logic loc = new Logic();
-            String pap = loc.returnFileAsString("E:/pap.txt");
-            CaesarCipher cs = new CaesarCipher();
-            DES des = new DES();
-            des.generateKey();
-            String key = "NeedAKey";
-//
-//           String hello = "abcdefgh";
-//            String tesTexT = "Hello wolrd what a wonderful day to accomplizh zomething";
-//            byte[] h = tesTexT.getBytes();
-//            System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
-//            for (byte i : h) {
-//                System.out.print(i + ", ");
-//            }
-//            System.out.println("");
-//            System.out.println("Original String: " + tesTexT);
+//            Logic loc = new Logic();
+//            String filaAsString = loc.returnFileAsString("FILEPATH HERE");
+//            CaesarCipher cs = new CaesarCipher();
+//            DES des = new DES();
+//            String key = "NeedAKey";
 
-//            byte[] encrypt = des.encryptPlaintext(pap, key);
-
-//            System.out.println("Crypted: " + new String(encrypt));
-//            System.out.println("+++   ENCRYPTED STRING IN BYTES    +++");
-//            for (byte f : encrypt) {
-//                System.out.print(f + ", ");
-//            }
-//             String test1 = cs.encrypt(pap, 3);
-//             
+            // -------------------------------- DES ENCRYPT TIME AND DECYPT TIME  --------------------------------
 //            long startCrypt = System.currentTimeMillis();
-////            byte[] decrypt = des.decryptData(encrypt, key);
-//             cs.decrypt(test1, 3);
+//            byte[] encrypted = des.encryptPlaintext(fileAsString, key);
 //            long endCrypt = System.currentTimeMillis();
-//            System.out.println("DES DECRYPTING time: " + (endCrypt - startCrypt) + "ms.");
+//            System.out.println("DES ENCRYPTING time: " + (endDesDerypt - startDESDecrypt) + "ms.");
+//            long startDESDecrypt = System.currentTimeMillis();
+//            byte[] decrypt = des.decryptData(encrypted, key);
+//            long endDesDeCrypt = System.currentTimeMillis();
+//            System.out.println("DES DECRYPTING time: " + (endDesDerypt - startDESDecrypt) + "ms.");
+            
+        //    -------------------------------- CAESAR CIPHER ENCRYPT TIME AND DECYPT TIME  --------------------------------
+//            long startCaesarEncrypt = System.currentTimeMillis();
+//             String test1 = cs.encrypt(pap, 3);
+//             cs.decrypt(test1, 3);
+//            long endCaesarEncrypt = System.currentTimeMillis();
+//            System.out.println("CAESAR ENCRYPTING time: " + (endCaesarEncrypt - startCaesarEncrypt) + "ms.");
 
-//            System.out.println("Decrypted: " + new String(decryptHello));
-//            System.out.println("+++   DECRYPTED STRING IN BYTES   +++");
-//            for (byte e : decryptHello) {
-//                System.out.print(e + ", ");
-//            }
-//            System.out.println("");
-            System.out.println("END OF PROGRAM");
-
-//            UserInterface ui = new UserInterface(new Scanner(System.in));
-//                        ui.run();
+//            long startCaesarDecrypt = System.currentTimeMillis();
+//              cs.decrypt(test1, 3);
+//            long endCaesarDecrypt = System.currentTimeMillis();
+//            System.out.println("CAESAR DECRYPTING time: " + (endCaesarDecrypt - startCaesarDecrypt) + "ms.");
+// ------------------------------------------------------------------------------------------------------------------------------------
+            UserInterface ui = new UserInterface(new Scanner(System.in));
+                        ui.run();
         } catch (Exception e) {
             e.printStackTrace();
 
         }
     }
+
 }
