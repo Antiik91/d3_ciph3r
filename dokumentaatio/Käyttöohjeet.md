@@ -1,6 +1,6 @@
 ## Projektin aukaiseminen 
 
-Mene terminaalilla kansion juureen ja suorita jar komennolla java -jar 
+Mene terminaalilla kansion juureen ja suorita jar komennolla java -jar d3ciph3r-1.0-SNAPSHOT.jar
 
 ## Käyttö
 
