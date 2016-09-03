@@ -14,6 +14,8 @@ public class Logic {
 
     /**
      * Creates objects used for cyrpting.
+     *
+     * @throws java.lang.Exception if erros in cd or des.
      */
     public Logic() throws Exception {
         this.cs = new CaesarCipher();

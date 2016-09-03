@@ -30,21 +30,19 @@ public class Main {
 //            byte[] decrypt = des.decryptData(encrypted, key);
 //            long endDesDeCrypt = System.currentTimeMillis();
 //            System.out.println("DES DECRYPTING time: " + (endDesDerypt - startDESDecrypt) + "ms.");
-            
         //    -------------------------------- CAESAR CIPHER ENCRYPT TIME AND DECYPT TIME  --------------------------------
 //            long startCaesarEncrypt = System.currentTimeMillis();
 //             String test1 = cs.encrypt(pap, 3);
 //             cs.decrypt(test1, 3);
 //            long endCaesarEncrypt = System.currentTimeMillis();
 //            System.out.println("CAESAR ENCRYPTING time: " + (endCaesarEncrypt - startCaesarEncrypt) + "ms.");
-
 //            long startCaesarDecrypt = System.currentTimeMillis();
 //              cs.decrypt(test1, 3);
 //            long endCaesarDecrypt = System.currentTimeMillis();
 //            System.out.println("CAESAR DECRYPTING time: " + (endCaesarDecrypt - startCaesarDecrypt) + "ms.");
 // ------------------------------------------------------------------------------------------------------------------------------------
             UserInterface ui = new UserInterface(new Scanner(System.in));
-                        ui.run();
+            ui.run();
         } catch (Exception e) {
             e.printStackTrace();
 

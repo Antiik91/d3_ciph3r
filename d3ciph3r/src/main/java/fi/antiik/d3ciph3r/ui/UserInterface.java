@@ -1,4 +1,3 @@
-
 package fi.antiik.d3ciph3r.ui;
 
 import fi.antiik.d3ciph3r.logic.*;
@@ -21,6 +20,7 @@ public class UserInterface {
      * New UserInterface creates logic wich operates commands from the user.
      *
      * @param scanner comes from Main
+     * @throws java.lang.Exception if erros in logic.
      */
     public UserInterface(Scanner scanner) throws Exception {
         this.scanner = scanner;
@@ -30,6 +30,8 @@ public class UserInterface {
     /**
      * Run is called from Main. it's the centre of program and is active while
      * program is running.
+     *
+     * @throws java.lang.Exception if errors in logic or reading file.
      */
     public void run() throws Exception {
         System.out.println("Hello and welcome to D3ciph3r program! \n"
@@ -103,7 +105,7 @@ public class UserInterface {
      */
     private String stringOrFile() {
         System.out.println("Type 1 if you want to use a string or "
-                + "type 2 if you want to use a txtfile.");
+                + "type 2 if you want to use a textfile.");
         int option = -1;
         while (option != 1 || option != 2) {
             String possibleOption = this.scanner.nextLine();
@@ -198,7 +200,7 @@ public class UserInterface {
     /**
      * Encrypts the data with DES.
      *
-     * @throws Exception
+     * @throws Exception if errors in encryption.
      */
     private void DESencrypt() throws Exception {
         String plainText = stringOrFile();
@@ -215,7 +217,7 @@ public class UserInterface {
     /**
      * Decrypts the data with DES.
      *
-     * @throws Exception
+     * @throws Exception if errors in decryption.
      */
     private void DESDecrypt() throws Exception {
         System.out.println("NOTE: Please consider using Files instead of strings as DES decrypting uses byte arrays.");
@@ -301,11 +303,12 @@ public class UserInterface {
             System.out.println("Error: " + e);
         }
     }
-/**
- * Method to save the file when content is crypted.
- * 
- * @param content  content to be saved.
- */
+
+    /**
+     * Method to save the file when content is crypted.
+     *
+     * @param content content to be saved.
+     */
     private void saveFile(String content) {
         System.out.println("Path to save your content: ");
         String path = this.scanner.nextLine();
@@ -313,7 +316,7 @@ public class UserInterface {
             this.logic.saveFile(path, content);
             System.out.println("your content is saved to: " + path + "\n"
                     + "Remember to store your key! ");
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error while trying to save the file: " + e);
         }
 

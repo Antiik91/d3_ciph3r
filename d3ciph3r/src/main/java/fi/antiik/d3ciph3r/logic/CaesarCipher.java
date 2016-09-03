@@ -56,7 +56,8 @@ public class CaesarCipher {
     /**
      * Encrypt the data and return ciphered text.
      *
-     * @param plaintext
+     * @param plaintext plaintext to be encrypted.
+     * @param shift shift used in encrypting.
      * @return ciphered text.
      */
     public String encrypt(String plaintext, int shift) {

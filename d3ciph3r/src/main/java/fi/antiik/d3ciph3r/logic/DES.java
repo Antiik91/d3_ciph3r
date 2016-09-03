@@ -248,7 +248,7 @@ public class DES {
      * @param key byte array of crypted data.
      * @param plaintext String to be crypted.
      * @return byte array of crypted data.
-     * @throws Exception
+     * @throws Exception NullPointer.
      */
     public byte[] encryptPlaintext(String plaintext, String key) throws Exception {
         if (plaintext.isEmpty()) {
