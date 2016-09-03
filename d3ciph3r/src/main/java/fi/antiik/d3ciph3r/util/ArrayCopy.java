@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package fi.antiik.d3ciph3r.util;
 
 /**
- *
+ * Array copy tool. 
  * @author janantik
  */
 public class ArrayCopy {
     
     /**
-     * Copies the byte array to the another array.
+     * Copies the byte array to the another byte  array.
      * @param from array where data is copied.
      * @param fromPos Startingposition of the copy.
      * @param to arraywhere data is copied

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fi.antiik.d3ciph3r.logic;
 
 import fi.antiik.d3ciph3r.filehandler.*;
@@ -70,7 +65,7 @@ public class Logic {
     }
 
     /**
-     * Checks that scanner can parse integer from input.
+     * Checks that command can be parsed to integer from input.
      *
      * @param command Command in String.
      * @return -1 if exception, positive input else.
@@ -97,31 +92,31 @@ public class Logic {
     /**
      * Use DES to encrypt plaintext string.
      *
-     * @param plainText
-     * @param key
+     * @param plaintext Text to be necrypted
+     * @param key Key used in alghorithm.
      * @return ciphered text in byte array.
      * @throws Exception
      */
-    public byte[] encryptDES(String plainText, String key) throws Exception {
-        byte[] encrypted = this.des.encryptPlaintext(plainText, key);
+    public byte[] encryptDES(String plaintext, String key) throws Exception {
+        byte[] encrypted = this.des.encryptPlaintext(plaintext, key);
         return encrypted;
     }
 
     /**
-     * This Method parses the bytes from a string
+     * This Method parses the bytes from a string.
      *
-     * @param byteArray
-     * @return
+     * @param byteArray encrypted text in a string.
+     * @return bytes array of encrypted data or null if can't be parsed.
      */
     public byte[] getByteArrayFromString(String byteArray) {
         String[] bytesAsString = byteArray.split(" ");
         byte[] bytes = new byte[bytesAsString.length];
         try {
-        for (int i = 0; i < bytesAsString.length; i++) {
-            byte b = (byte) Integer.parseInt(bytesAsString[i]);
-            bytes[i] = b;
-        }
-        } catch(Exception e){
+            for (int i = 0; i < bytesAsString.length; i++) {
+                byte b = (byte) Integer.parseInt(bytesAsString[i]);
+                bytes[i] = b;
+            }
+        } catch (Exception e) {
             return null;
         }
 

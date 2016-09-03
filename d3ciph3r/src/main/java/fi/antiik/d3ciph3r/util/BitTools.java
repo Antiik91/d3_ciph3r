@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fi.antiik.d3ciph3r.util;
 
 /**
  * Helper methods to extract bits from byte array and cocatenate the byte
- * arrays.
+ * arrays. helper methods from
+ * http://www.herongyang.com/Java/Bit-String-Get-Bit-from-Byte-Array.html and
+ * http://www.herongyang.com/Java/Bit-String-Set-Bit-to-Byte-Array.html
  *
- * @author User
+ * @author janantik
  */
 public class BitTools {
 

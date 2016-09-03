@@ -181,7 +181,7 @@ public class DES {
     }
 
     /**
-     * Generates the new 64 bit (8 character) random key.
+     * Generates the new 64 bit (8 characters long) random key.
      */
     public void generateKey() {
         Random random = new Random();
@@ -203,9 +203,8 @@ public class DES {
      * @param data encrypted data array.
      * @param key key to use in decryption.
      * @return plaintext byte array
-     * @throws Exception
      */
-    public byte[] decryptData(byte[] data, String key) throws Exception {
+    public byte[] decryptData(byte[] data, String key) {
         this.key = key.getBytes();
         int i;
         byte[] decrypted = new byte[data.length];
@@ -219,7 +218,7 @@ public class DES {
                 ArrayCopy.byteCopy(bloc, 0, decrypted, i - 8, bloc.length);
             }
             if (i < data.length) {
-                //Add the information to the bloc
+                //Add the information (in bits) to the bloc
                 bloc[i % 8] = data[i];
             }
         }
@@ -229,7 +228,7 @@ public class DES {
 
         int counter = 0;
 
-        //removes the padding. Padding is at end of the array, so we search as long as we have 0 bytes in 
+        //removes the padding. Padding is at end of the array, so we search as long as we have 0 bytes in decryption array.
         for (int j = decrypted.length - 1; j >= 0; j--) {
             if (decrypted[j] != 0) {
                 break;
@@ -288,7 +287,7 @@ public class DES {
         int i;
         for (i = 0; i < data.length + len; i++) {
             if (i > 0 && i % 8 == 0) {
-                // When we have bloc size of 64 bit, its time to encryptPlaintext the block. Copy it to
+                // When we have bloc size of 64 bit, its time to encrypt the plaintext block. Copy it to
                 // the crypted data array.
                 bloc = cryptBloc(bloc, true);
                 ArrayCopy.byteCopy(bloc, 0, crytpedData, i - 8, bloc.length);
@@ -425,8 +424,8 @@ public class DES {
     }
 
     /**
-     * If we need to encryptPlaintext text, we use this round to
-     * encryptPlaintext the right side.
+     * If we need to encrypt Plaintext , we use this round to encryptPlaintext
+     * the right side.
      *
      * @param right message data's right side.
      * @param left message data's left sied.
@@ -506,7 +505,6 @@ public class DES {
         }
         return subKeySet;
     }
-
 
     //////////////////////////////////////////// //////////////////////////////////////////// ///////////////////
 }

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package fi.antiik.d3ciph3r.ui;
 
 import fi.antiik.d3ciph3r.logic.*;
@@ -107,7 +103,7 @@ public class UserInterface {
      */
     private String stringOrFile() {
         System.out.println("Type 1 if you want to use a string or "
-                + "Type 2 if you want to use a txtfile.");
+                + "type 2 if you want to use a txtfile.");
         int option = -1;
         while (option != 1 || option != 2) {
             String possibleOption = this.scanner.nextLine();

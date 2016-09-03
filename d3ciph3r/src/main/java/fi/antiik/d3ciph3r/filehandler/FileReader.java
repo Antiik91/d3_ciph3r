@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 /**
  * Class is used to read file into a string.
  *
- * @author User
+ * @author janantik
  */
 public class FileReader {
 
