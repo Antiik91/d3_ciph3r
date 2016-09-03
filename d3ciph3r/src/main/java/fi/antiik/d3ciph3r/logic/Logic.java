@@ -116,9 +116,13 @@ public class Logic {
     public byte[] getByteArrayFromString(String byteArray) {
         String[] bytesAsString = byteArray.split(" ");
         byte[] bytes = new byte[bytesAsString.length];
+        try {
         for (int i = 0; i < bytesAsString.length; i++) {
             byte b = (byte) Integer.parseInt(bytesAsString[i]);
             bytes[i] = b;
+        }
+        } catch(Exception e){
+            return null;
         }
 
         return bytes;

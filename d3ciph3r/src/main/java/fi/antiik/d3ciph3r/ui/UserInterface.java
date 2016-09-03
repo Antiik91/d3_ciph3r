@@ -161,8 +161,7 @@ public class UserInterface {
         String cipherText = this.logic.encrytpCaesar(plainText, shift);
         this.cipherTextContent = cipherText;
         System.out.println("Your shiftkey(Keep safe): " + shift);
-        System.out.println("Your crypted text = " + cipherText);
-        System.out.println("Dont forget to save!");
+        saveFile(this.cipherTextContent);
     }
 
     /**
@@ -176,8 +175,7 @@ public class UserInterface {
         int shift = handleShift();
         String plainText = this.logic.decryptCaesar(cipherText, shift);
         this.decryptedText = plainText;
-        System.out.println("Your text: " + plainText);
-        System.out.println("Dont forget to save!");
+        saveFile(decryptedText);
 
     }
 
@@ -210,13 +208,12 @@ public class UserInterface {
         String plainText = stringOrFile();
         String key = handleKey();
         byte[] encrypted = this.logic.encryptDES(plainText, key);
-        System.out.println("Your encrypted data in bytes. don't forget to save!");
+
         this.cipherTextContent = "";
         for (byte f : encrypted) {
-            System.out.print(f + " ");
             this.cipherTextContent += f + " ";
         }
-        System.out.println("");
+        saveFile(this.cipherTextContent);
     }
 
     /**
@@ -227,10 +224,15 @@ public class UserInterface {
     private void DESDecrypt() throws Exception {
         System.out.println("NOTE: Please consider using Files instead of strings as DES decrypting uses byte arrays.");
         byte[] cipher = handleDESDecrypt();
+        if (cipher == null) {
+            System.out.println("There was a problem while parsing your bytes. Please check that the file or the string is correctly made. For example: 12 -222 34 12 \n "
+                    + "Remove any double spaces or extra characthers.");
+            return;
+        }
         String key = handleKey();
-        byte[] plainText = this.logic.decryptDES(cipher, key);
-        this.decryptedText = new String(plainText);
-        System.out.println("your decrypted text: " + decryptedText);
+        byte[] plainTextBytes = this.logic.decryptDES(cipher, key);
+        this.decryptedText = new String(plainTextBytes);
+        saveFile(this.decryptedText);
 
     }
 
@@ -287,21 +289,37 @@ public class UserInterface {
      * @param path Path to the file.
      */
     private void saveFile() {
-        System.out.println("Encrypted or ciphered text file. Leave empty if you dont wish to save.");
+        System.out.println("Encrypted or ciphered textfile. Leave empty if you don't wish to save it.");
         System.out.println("Path to the file: ");
         String pathEncrypted = this.scanner.nextLine();
-        System.out.println("Decrypted or plain text file. Leave empyt if you don't wish to save it.");
+        System.out.println("Decrypted or plain textfile. Leave empty if you don't wish to save it.");
         String pathDecrypted = this.scanner.nextLine();
         try {
-            if(!pathEncrypted.isEmpty()) {
-            this.logic.saveFile(pathEncrypted, this.cipherTextContent);
+            if (!pathEncrypted.isEmpty()) {
+                this.logic.saveFile(pathEncrypted, this.cipherTextContent);
             }
-            if(!pathDecrypted.isEmpty()) {
+            if (!pathDecrypted.isEmpty()) {
                 this.logic.saveFile(pathDecrypted, this.decryptedText);
             }
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
     }
+/**
+ * Method to save the file when content is crypted.
+ * 
+ * @param content  content to be saved.
+ */
+    private void saveFile(String content) {
+        System.out.println("Path to save your content: ");
+        String path = this.scanner.nextLine();
+        try {
+            this.logic.saveFile(path, content);
+            System.out.println("your content is saved to: " + path + "\n"
+                    + "Remember to store your key! ");
+        }catch (Exception e) {
+            System.out.println("Error while trying to save the file: " + e);
+        }
 
+    }
 }

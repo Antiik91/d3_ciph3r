@@ -180,7 +180,7 @@ public class DES {
 
 
     /**
-     * Generates the new 64 bit random key.
+     * Generates the new 64 bit (8 character) random key.
      */
     public void generateKey() {
         Random random = new Random();
@@ -200,6 +200,7 @@ public class DES {
      * Decrypts the data from byte array.
      *
      * @param data encrypted data array.
+     * @param key key to use in decryption.
      * @return plaintext byte array
      * @throws Exception
      */
