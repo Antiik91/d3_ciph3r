@@ -1,6 +1,6 @@
 # d3_ciph3r
 
-A program to encrypt or decrypt messages. Messages can be strings or text files.  Fruther documentation is in finnish. Code and javadoc is in english. 
+A java program to encrypt or decrypt messages. Messages can be strings or text files.  Fruther documentation is in finnish. Code and javadoc is in english. 
 
 * [Aihemäärittely](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/Aihem%C3%A4%C3%A4rittely.md)
 * [Toteutusdokumentti](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/Toteutusdokumentti.md)
