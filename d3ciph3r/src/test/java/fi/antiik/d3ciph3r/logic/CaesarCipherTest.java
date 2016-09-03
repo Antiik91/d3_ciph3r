@@ -82,4 +82,24 @@ public class CaesarCipherTest {
         assertEquals("Vjku ku vjg vguv hqt dki ujkhv. Yknn kv yqtm?", this.testCaesar.encrypt("This is the test for big shift. Will it work?", 4500));
 
     }
+
+    @Test
+    public void encryptAndDecrypt() {
+        String message = "Hello my good sir, what a wonderful day to encrypt a message!";
+        String decrypt = this.testCaesar.encrypt(message, 4);
+        assertEquals(message, this.testCaesar.decrypt(decrypt, 4));
+    }
+    @Test
+    public void alphabetsEncryptAndDecryptLower() {
+        String alphabets = "abcdefghijklmnopqrstuvwxyz";
+        String decrypt = this.testCaesar.encrypt(alphabets, 3);
+        assertEquals(alphabets, this.testCaesar.decrypt(decrypt,3));
+    }
+    
+    @Test
+    public void alphabetsEncryptAndDecryptUpper() {
+        String alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String decrypt = this.testCaesar.encrypt(alphabets, 3);
+        assertEquals(alphabets, this.testCaesar.decrypt(decrypt, 3));
+    }
 }

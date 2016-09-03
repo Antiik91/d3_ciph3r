@@ -5,10 +5,13 @@ import fi.antiik.d3ciph3r.util.BitTools;
 import java.util.Random;
 
 /**
- * Data Encryption Standard (DES) is a symmetric-keyReady algorithm for the
- * encryption of electron data. Developed originally in the early 1970 at IBM.
+ * Data Encryption Standard (DES) is a symmetric-key algorithm for the
+ * encryption of electronic data. Developed originally in the early 1970 at IBM.
  * DES is a block cipher, takes a plaintext bits and transform it to another
  * ciphertext of the same length. block size is 64 bits.
+ *
+ * Help and inspiration when the problems were too severe from:
+ * https://n3vrax.wordpress.com/2011/07/23/des-algorithm-java-implementation/
  *
  * @author janantik
  */
@@ -52,7 +55,7 @@ public class DES {
     /**
      * Number of left shifts to be shifted in Cn and Dn (See createSubKeys())
      */
-    private int[] shitfs = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+    private int[] shifts = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 
     /**
      * Initial permutation. Permutes 64 bits of message data. Rearranges the
@@ -177,8 +180,6 @@ public class DES {
         return subKeys;
     }
 
-
-
     /**
      * Generates the new 64 bit (8 character) random key.
      */
@@ -230,9 +231,9 @@ public class DES {
 
         //removes the padding. Padding is at end of the array, so we search as long as we have 0 bytes in 
         for (int j = decrypted.length - 1; j >= 0; j--) {
-            if(decrypted[j] != 0) {
+            if (decrypted[j] != 0) {
                 break;
-            }else {
+            } else {
                 counter++;
             }
         }
@@ -407,12 +408,14 @@ public class DES {
 
         return substituted;
     }
-/**
- * XOR the data between arrays.
- * @param a array a.
- * @param b array b.
- * @return new data array which has been xorred
- */
+
+    /**
+     * XOR the data between arrays.
+     *
+     * @param a array a.
+     * @param b array b.
+     * @return new data array which has been xorred
+     */
     private byte[] xor(byte[] a, byte[] b) {
         byte[] xorred = new byte[a.length];
         for (int i = 0; i < a.length; i++) {
@@ -455,9 +458,7 @@ public class DES {
     }
 
     //////////////////////////////////////////// //////////////////////////////////////////// ///////////////////
-    
     //////////////////////////////////////////// Subkey Generation methods  ////////////////////////////////////////////
-
     /**
      * Method is used to create set of subkeys from the original 56-bit key.
      * First it permutes the key using PC-1 array. after that the Permuted key
@@ -481,8 +482,20 @@ public class DES {
         // Then rotate those halves 1 or 2 bits according to the shifts table.
         // depending on the round
         for (int j = 0; j < 16; j++) {
-            c = rotateShift(c, shitfs[j]);
-            d = rotateShift(d, shitfs[j]);
+            byte[] tmpC = c;
+            byte[] tmpD = d;
+            // Both halves are 28 bits long so in order to shift every bit we use 
+            // 28 rounds both C half and D half.
+            for (int i = 0; i < 28; i++) {
+
+                int bit = BitTools.getBit(tmpC, shifts[j]);
+                BitTools.setBit(c, i, bit);
+            }
+            for (int i = 0; i < 28; i++) {
+
+                int bit = BitTools.getBit(tmpD, shifts[j]);
+                BitTools.setBit(d, i, bit);
+            }
 
             // use concatenate to make the subkey from two halves
             byte[] subKey = BitTools.concatenate(c, d, 28);
@@ -494,24 +507,6 @@ public class DES {
         return subKeySet;
     }
 
-    /**
-     * left shifts from creating subkeys is rotated trough this method.
-     *
-     * @param data Cn or Dn.
-     * @param shift number of left shifts to be made in new
-     * @return new half of a subkey.
-     */
-    private byte[] rotateShift(byte[] data, int shift) {
-        byte[] shifted = new byte[(28 - 1) / 8 + 1];
-        for (int i = 0; i < 28; i++) {
-
-            // get the bit from data (c or d half) and set it to the shifted array.
-            // Move the bit 1 or two times left according to the shift.
-            int bit = BitTools.getBit(data, shift);
-            BitTools.setBit(shifted, i, bit);
-        }
-        return shifted;
-    }
 
     //////////////////////////////////////////// //////////////////////////////////////////// ///////////////////
 }

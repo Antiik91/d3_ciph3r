@@ -25,7 +25,7 @@ public class Main {
             String key = "NeedAKey";
 //
 //           String hello = "abcdefgh";
-           String tesTexT = "!#¤%&/()=?`^*-_.:,;<>@£${[]}~*";
+           String tesTexT = "Hello wolrd what a wonderful day to accomplizh zomething";
            byte[] h = tesTexT.getBytes();
             System.out.println("+++   ORIGINAL STRING IN BYTES   +++");
             for (byte i : h) {
@@ -49,26 +49,9 @@ public class Main {
             }
             System.out.println("");
             System.out.println("END OF PROGRAM");
-            
-//            byte[] testi = new byte[5];
-//            int d = 5;
-//            int j = 3;
-//            for (int i = 0; i < 10; i++) {
-//  
-//                BitTools.setBit(testi, i, 1);
-//            }
-//            
-//            System.out.println("TESTITAVUT");
-//            for (byte b : testi) {
-//                System.out.print(b + " ");
-//            }
-//            
-//            
 
 //            UserInterface ui = new UserInterface(new Scanner(System.in));
 //                        ui.run();
-
-
         } catch (Exception e) {
             e.printStackTrace();
 

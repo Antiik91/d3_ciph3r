@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fi.antiik.d3ciph3r.logic;
 
 /**
@@ -17,9 +12,11 @@ public class CaesarCipher {
     private int shift;
 
     /**
-     * shift is used to determinate the number of positions to be shifted.
+     * shift is used to determinate the number of positions to be shifted. If
+     * shift is negative it's multplied by one so correct shift is used. If the
+     * shift is zero whe use default shift, which is 3.
      *
-     * @param shift fixed number to be shifted in alphabets.
+     * @param shift number how many shift is needed in alphabets.
      */
     public CaesarCipher(int shift) {
 
@@ -87,7 +84,8 @@ public class CaesarCipher {
      * decrypts the data from param.
      *
      * @param encryptedText Encrypted text to be decrypted.
-     * @return plaintext.
+     * @param shift shift used in decrypting.
+     * @return plaintext of encrypted string.
      */
     public String decrypt(String encryptedText, int shift) {
         setShift(shift);

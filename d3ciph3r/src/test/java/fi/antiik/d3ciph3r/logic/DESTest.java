@@ -155,6 +155,29 @@ public class DESTest {
     }
 
     @Test
+    public void encryptNumbers() {
+        byte[] correct = {79, 101, -18, -31, 78, 76, -17, 29, 71, 101, -26, -31, 70, 76, -29, 29, 2, 1, -1, 0, 92, 4, 3, 12};
+        try {
+            byte[] encrypt = this.des.encryptPlaintext("1 2 3 4 5 6 7 8 9 0", "NeedAKey");
+            assertTrue(compareArrays(correct, encrypt));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void decryptNumbers() {
+        byte[] correct = {49, 32, 50, 32, 51, 32, 52, 32, 53, 32, 54, 32, 55, 32, 56, 32, 57, 32, 48};
+        byte[] compare = {79, 101, -18, -31, 78, 76, -17, 29, 71, 101, -26, -31, 70, 76, -29, 29, 2, 1, -1, 0, 92, 4, 3, 12};
+        try {
+            compare = this.des.decryptData(compare, "NeedAKey");
+            assertTrue(compareArrays(correct, compare));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
     public void decryptAlphabetLowerCase() {
         byte[] alphalower = {39, 11, 124, -26, 4, 14, 112, 106, 4, 31, 50, -86, 20, 60, 118, 26, 33, 55, 38, -74, 48, -54, -94, 78, 2, 37, -113, 66, 30, 4, 11, 94};
         byte[] correct = "abcdefghijklmnopqrstuvwxyz".getBytes();
@@ -185,6 +208,19 @@ public class DESTest {
         try {
             special = this.des.decryptData(special, "NeedAKey");
             assertTrue(compareArrays(correct, special));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void encryptAndDecrypt() {
+        String original = "Hello world! What a wonderful day!";
+        String key = "NeedAKey";
+        try {
+            byte[] crypted = this.des.encryptPlaintext(original, key);
+            String encrypted = new String(this.des.decryptData(crypted, key));
+            assertTrue(original.equals(encrypted));
         } catch (Exception e) {
             System.out.println(e);
         }
