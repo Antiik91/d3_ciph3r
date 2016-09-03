@@ -16,8 +16,8 @@ ja opettaa paljon uutta, sillä aiempaa kokemusta salausalgoritmeista minulla ei
 
 #Aika- ja tilavaativuus
 
-Normaalisti DES:n aikavaativuus on O(1), jos suoritetaan block salausta [wikipedia](https://en.wikipedia.org/wiki/Block_cipher), eli salataan tietyn kokoisia "bittijoukkoja".
-Toisaalta, jos DES suoritetaan mode of operationissa [wikipedia](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) salatakseen pidempiä tekstejä, tulee aikavaativuudeksi O(m), missä m on viestin pituus. Eli voidaan ajatella, että sinulla on m kappaletta "bittijoukkoja". Tilavaativuus on myös O(m).
+Normaalisti DES:n aikavaativuus on O(1), jos suoritetaan block salausta [wikipedia](https://en.wikipedia.org/wiki/Block_cipher), eli salataan 64 bitin kokoisia "bittijoukkoja".
+Toisaalta, jos DES suoritetaan mode of operationissa [wikipedia](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) salatakseen pidempiä tekstejä, tulee aikavaativuudeksi O(m), missä m on viestin pituus. Eli voidaan ajatella, että sinulla on m kappaletta 64 bittisiä joukkoja. Tilavaativuus on myös O(m).
 
 Caesar Cipherissa aika- ja tilavaativuudet ovat O(m) algoritmi salataan vaihtamalla jokainen kirjain toiseen antamalla shift määrä, jonka verran aakkosista siirretään vasemmalle kyseisestä kirjaimesta.
 
