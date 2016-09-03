@@ -11,7 +11,7 @@ Aputyökaluluokan testeissä on testattu metodien toimivuutta JUnit testeillä, 
 Tiedostonkäsittelyluokkia on testattu vain käsin, sillä tiedostonhallinan testaaminen ei kuulu kurssiin. Mutta koska ne ovat oleellinen osa ohjelman toimivuutta, niitä on testattu useita kertoja ja  siten varmistettu toimivuus luokkien toimivuus.
 	
 # Syötteet
-Syötteinä on käytetty eripituisia merkkijonoja sekä tekstitiedostoja. Caesar Cipherissa ei toimi ÄÄKKÖSET joten käytän siinä englantia testauksissa. Suurimmat testatut tekstitiedostot olivat DES algoritmille oli Edgar allan poen The works of Edgar allan poe (567kt  plaintext)  ja Caesar algoritmille Ensimmäinen osa kyseisestä teoksesta. (42kt plaintext).
+Syötteinä on käytetty eripituisia merkkijonoja sekä tekstitiedostoja. Caesar Cipherissa ei toimi ÄÄKKÖSET joten käytän siinä englantia testauksissa. Suurimmat testatut tekstitiedostot olivat DES algoritmille oli Edgar allan poen [The works of Edgar allan poe](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/THE%20WORKS%20OF%20EDGAR%20ALLAN%20POE.txt) (567kt  plaintext)  ja Caesar algoritmille [Ensimmäinen osa kyseisestä teoksesta.](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/THE%20PURLOINED%20LETTER%20BY%20EDGAR%20ALLAN%20POE.txt) (42kt plaintext). [Teos on otettu Gutenberg projektista.](https://www.gutenberg.org/wiki/Main_Page)
 
 # Toistettavuus
   JUnit testit voidaan toistaa netbeansissa suorittamalla testit esimerkiksi alt + f6 pikanäppäimellä. Suorituskykytestauksen voit toistaa seuraavasti:
