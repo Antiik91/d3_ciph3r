@@ -7,7 +7,7 @@ Ohjelman Logic luokka pyörittää kokonaisuutta, ja saa käskyjä tietoja UIlta
 	
 	
 # Saavutetut aika-ja tilavaativuudet
-tavoitteksi asetetut aikavaativuudet saatiin tavoitettua. DES aikavaativuus on O(n) missä n on salattavien lohkojen määrä ja Caesar Cipherissa O(n), missä n viittaa kirjainten lukumäärään. Kyseiset algoritmit eivät ole millään tavalla vertailukelpoisia keskenään nopeudessa, sillä toinen hoitaa tietokoneelle tyypillisiä tavu ja bittitason operaatioita ja toinen käy kirjain kerrallaan tekstiä läpi. aikavaativuudessa ei oteta huomioon viestien kirjoittamista ja tallentamista levylle, mitkä vievät jo huomattavasti enenmmän aikaa. Aikavaativuuksien tarkempi analyysi löytyy [Testausdokumentaatiosta](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/Testausdokumentti.md)
+tavoitteksi asetetut aikavaativuudet saatiin tavoitettua. DES aikavaativuus on O(n) missä n on salattavien lohkojen määrä ja Caesar Cipherissa O(n), missä n viittaa kirjainten lukumäärään. Kyseiset algoritmit eivät ole millään tavalla vertailukelpoisia keskenään nopeudessa, sillä toinen hoitaa tietokoneelle tyypillisiä tavu ja bittitason operaatioita ja toinen käy kirjain kerrallaan tekstiä läpi. aikavaativuudessa ei oteta huomioon viestien kirjoittamista ja tallentamista levylle, mitkä vievät jo huomattavasti enenmmän aikaa. Aikavaativuuksien tarkempi analyysi löytyy [Testausdokumentaatiosta.](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/Testausdokumentti.md)
 Tilavaativuudet riippuvat viestin koosta, eli molemmissa algoritmeissä ne ovat O(m)
 	
 # Puutteet ja parannusehdotukset.
