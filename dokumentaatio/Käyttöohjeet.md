@@ -22,7 +22,7 @@ Mikäli haluat salata/purkaa tekstiedoston seuraavaksi ohjelma kysyy polkua tied
 
 Tämän jälkeen sinulta pyydetään DESissä avainta, joka on 8 kirjaiminen merkkijono tai Caesar Cipherissa shiftiä, joka on integer luku.
 
-Kun salaus on tehty, pyydetään sinua kirjoittamaan polku, minne haluat salatun tiedoston tallentaa. Salattu tai purettu tiedosto löytyy kyseisestä sijainnista.
+Kun salaus on tehty, pyydetään sinua kirjoittamaan polku, minne haluat salatun tiedoston tallentaa. Salattu tai purettu tiedosto löytyy kyseisestä sijainnista. Mikäli kirjoitat vain tiedoston nimen, tallennetaan se sinne missä jar tiedosto on (Ubuntu)
 
 
 Mikäli et muista mikä komento oli mikäkin painamalla päävalikossa 5 tulee ohjeet uudestaan näkyviin. 8 lopettaa ohjelman. 
