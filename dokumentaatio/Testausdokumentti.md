@@ -9,6 +9,8 @@ DESin kanssa testataan, että avaimen puuttuminen ei kaada ohjelmaa, vaan silloi
 Aputyökaluluokan testeissä on testattu metodien toimivuutta JUnit testeillä, ja niiden rikkoutuminen huomaa nopeasti DES salauksen ja tai purun epäonnistuessa. Käytännön testaus toimivuudesta tulee joka kerran kun teksti salataan / salaus puretaan.
 	
 Tiedostonkäsittelyluokkia on testattu vain käsin, sillä tiedostonhallinan testaaminen ei kuulu kurssiin. Mutta koska ne ovat oleellinen osa ohjelman toimivuutta, niitä on testattu useita kertoja ja  siten varmistettu toimivuus luokkien toimivuus.
+
+Logiikka luokassa on testtu logiikan kannalta olennaisia metodeja JUnit testeillä. Koska DES ja Caesarin toimivuudesta oli jo omat testit, jätin niiden testaamisen uudestaan logiikan kautta pois, sillä luokkien omat testit takaavat niiden toimivuuden.
 	
 # Syötteet
 Syötteinä on käytetty eripituisia merkkijonoja sekä tekstitiedostoja. Caesar Cipherissa ei toimi ÄÄKKÖSET joten olen siinä käyttänyt englantia testauksissa. Suurimmat testatut tekstitiedostot olivat DES algoritmille oli Edgar allan poen [The works of Edgar allan poe](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/THE%20WORKS%20OF%20EDGAR%20ALLAN%20POE.txt) (567kt  plaintext)  ja Caesar algoritmille [Ensimmäinen osa kyseisestä teoksesta.](https://github.com/Antiik91/d3_ciph3r/blob/master/dokumentaatio/THE%20PURLOINED%20LETTER%20BY%20EDGAR%20ALLAN%20POE.txt) (42kt plaintext). [Teos on otettu Gutenberg projektista.](https://www.gutenberg.org/wiki/Main_Page)
